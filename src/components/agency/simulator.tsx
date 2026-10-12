@@ -7,7 +7,7 @@ import { agencyConfig, brl, simulateInvestment } from "@/lib/agency-config";
 
 export function Simulator() {
   const [media, setMedia] = useState(800);
-  const [cpc, setCpc] = useState("2.50");
+  const [cpc, setCpc] = useState(agencyConfig.initialCpc.toFixed(2));
   const [first, setFirst] = useState(true);
   const result = simulateInvestment(media, Number(cpc), first);
   return <section id="simulador" className="section section-tinted"><div className="container"><div className="section-heading centered"><span className="eyebrow">MENOS ACHISMO. MAIS CLAREZA.</span><h2>Descubra o potencial do seu<br className="desktop-break"/> investimento em <em>anúncios.</em></h2><p>Explore os números e encontre um ponto de partida para sua estratégia.</p></div>
