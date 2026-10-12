@@ -7,6 +7,23 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  vite: {
+    optimizeDeps: {
+      // Reject obsolete optimized modules so an open preview cannot combine
+      // a previous React renderer with a newly optimized hooks instance.
+      ignoreOutdatedRequests: false,
+      include: [
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-slider",
+        "@radix-ui/react-slot",
+        "@tanstack/react-query",
+        "lucide-react",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+      ],
+    },
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
