@@ -17,3 +17,5 @@
 - Legal content lives on distinct TanStack routes and remains explicitly marked as a draft until validated; this prevents unfinished legal text from appearing definitive.
 - Express all brand colors, visual effects and reusable layout styles through semantic tokens in `src/styles.css`; this keeps the white/red system consistent.
 - Pre-optimize browser UI dependencies and reject outdated optimized requests in Vite; open previews must reload rather than mix React instances from different dependency generations.
+
+- Render the existing Diagnostic once at the end of the index content, after FinalContact; all lead-capture anchors target diagnostico to avoid duplicate forms.
