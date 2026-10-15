@@ -1,7 +1,8 @@
 import { ArrowUpRight, BarChart3, Globe, LayoutGrid, MousePointer2, Target, TrendingUp, Instagram, ChevronDown } from "lucide-react";
+import lauxLogo from "@/assets/laux-logo.png.asset.json";
 
 export function Brand({ small = false }: { small?: boolean }) {
-  return <span className={`brand ${small ? "brand-small" : ""}`}><span className="brand-symbol" aria-hidden="true"><i/><i/><i/></span><span className="brand-word">LAUX<span className="brand-sub">AGÊNCIA</span></span></span>;
+  return <span className={`brand ${small ? "brand-small" : ""}`}><img src={lauxLogo.url} alt="LAUX AI CORE" /></span>;
 }
 
 export function PerformanceChart({ compact = false }: { compact?: boolean }) {
