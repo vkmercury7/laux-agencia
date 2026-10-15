@@ -37,6 +37,7 @@ export function maskPhone(value: string) {
 export const isValidPhone = (value: string) => /^\(\d{2}\) 9\d{4}-\d{4}$/.test(value);
 
 const line = (label: string, value: string) => (value.trim() ? `*${label}:* ${value.trim()}\n` : "");
+const listLine = (label: string, values: string[]) => (values.filter(Boolean).length ? `*${label}:* ${values.filter(Boolean).join(", ")}\n` : "");
 
 /** Builds the lead message sent to WhatsApp. Returns null when required data is missing. */
 export function buildLeadMessage(data: {
@@ -54,6 +55,27 @@ export function buildLeadMessage(data: {
     line("Objetivo", data.goal) + line("Orçamento para anúncios", data.budget) +
     line("Observações", data.notes ?? "") +
     "*Interesse:* Gestão de tráfego + criação de site.\n" +
+    "*Plano:* R$ 490 no primeiro mês e R$ 390/mês depois.\n" +
+    "*Origem:* Site LAUX AGÊNCIA.",
+  ].join("\n");
+}
+
+/** Builds the diagnosis request message. Returns null when required data is missing. */
+export function buildDiagnosticMessage(data: {
+  name: string; company: string; segment: string;
+  hasSite: string; usesInstagram: string; advertises: string; goals: string[];
+  phone: string; location: string; budget: string;
+}) {
+  const required = [data.name, data.company, data.segment, data.hasSite, data.usesInstagram, data.advertises, data.phone, data.budget];
+  if (required.some(v => !v.trim()) || !data.goals.length) return null;
+  return [
+    "*SOLICITAÇÃO DE DIAGNÓSTICO — LAUX AGÊNCIA*",
+    "",
+    line("Nome", data.name) + line("Empresa", data.company) + line("Segmento", data.segment) +
+    line("Possui site", data.hasSite) + line("Utiliza Instagram", data.usesInstagram) +
+    line("Já anuncia no Google ou Meta", data.advertises) + listLine("Objetivos", data.goals) +
+    line("WhatsApp", data.phone) + line("Localização", data.location) + line("Orçamento para anúncios", data.budget) +
+    "*Interesse:* Análise inicial da presença digital.\n" +
     "*Plano:* R$ 490 no primeiro mês e R$ 390/mês depois.\n" +
     "*Origem:* Site LAUX AGÊNCIA.",
   ].join("\n");
