@@ -2,18 +2,17 @@
 - [x] Verify and prevent mixed React dependency generations causing a blank preview.
 - [x] Establish white/red design system and visual architecture informed by LAUX AI.
 - [x] Build all institutional sections, interactive demonstrations, simulator, pricing and FAQ.
-- [x] Prepare contextual WhatsApp CTAs and honest pending-contact state; add draft legal pages.
 - [x] Test commercial formulas and verify desktop/mobile interactions and links.
-- [ ] Apply the uploaded LAUX AI CORE logo as the main site logo + favicon.
-- [ ] Activate real WhatsApp (55 22 99926-7900) across all commercial CTAs.
-- [ ] Upgrade lead form (new fields, BR phone mask, WhatsApp message template).
-- [ ] Add interactive 4-step digital diagnosis section with progress bar.
-- [ ] Enhance simulator (distribution chart, animated value cards, budget CTA).
-- [ ] Upgrade site showcase interactions (model switching, animated transitions).
-- [ ] Add "Assistente LAUX" floating virtual assistant with predefined answers.
-- [ ] Add mobile bottom conversion bar (diagnosis + WhatsApp) with safe area.
-- [ ] Microinteractions: button hovers, card elevation, number animation, particles, red glow.
-- [ ] Add analytics event scaffolding (GA4/Meta Pixel ready, no fake IDs).
-- [ ] Strategic CTAs wired at hero, after services/sites/simulator/pricing, footer.
-- [ ] Final tests: form, mask, WhatsApp link/message, simulator, wizard, assistant, responsiveness, console errors.
+- [x] Apply the uploaded LAUX AI CORE logo as the main site logo + favicon.
+- [x] Activate real WhatsApp (55 22 99926-7900) across all commercial CTAs.
+- [x] Upgrade lead form (new fields, BR phone mask, WhatsApp message template).
+- [x] Add interactive 4-step digital diagnosis section with progress bar.
+- [x] Enhance simulator (distribution chart, animated value cards, budget CTA).
+- [x] Upgrade site showcase interactions (model switching, animated transitions).
+- [x] Add "Assistente LAUX" floating virtual assistant with predefined answers.
+- [x] Add mobile bottom conversion bar (diagnosis + WhatsApp) with safe area.
+- [x] Microinteractions: button hovers, card elevation, number animation, particles, red glow.
+- [x] Add analytics event scaffolding (GA4/Meta Pixel ready, no fake IDs).
+- [x] Strategic CTAs wired at hero, after services/sites/simulator/pricing, footer.
+- [x] Final tests: form, mask, WhatsApp link/message, simulator, wizard, assistant, responsiveness, console errors.
 - [ ] Finalize legal documents and contractual scope — blocked on business details and legal approval.
