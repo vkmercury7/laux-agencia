@@ -34,9 +34,9 @@ export function ContactProvider({ children }: { children: ReactNode }) {
   </ContactContext.Provider>;
 }
 
-export function ContactButton({ children, message = "Olá! Conheci a LAUX AGÊNCIA pelo site e gostaria de saber mais sobre o plano de tráfego pago com criação de site.", source, variant = "premium", ...props }: ButtonProps & { message?: string; source?: string }) {
+export function ContactButton({ children, message = "Olá! Conheci a LAUX AGÊNCIA pelo site e gostaria de saber mais sobre o plano de tráfego pago com criação de site.", source, analyticsEvent, variant = "premium", ...props }: ButtonProps & { message?: string; source?: string; analyticsEvent?: "click_contract" }) {
   const open = useContact();
-  return <Button variant={variant} {...props} onClick={() => open(message, source)}>{children}<ArrowUpRight/></Button>;
+  return <Button variant={variant} {...props} onClick={() => { if (analyticsEvent) trackEvent(analyticsEvent, { source }); open(message, source); }}>{children}<ArrowUpRight/></Button>;
 }
 
 const segments = ["Restaurante", "Saúde e bem-estar", "Comércio", "Serviços", "Outro"];
