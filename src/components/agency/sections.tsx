@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Check, ChevronDown, Search, Target, Globe, BarChart3, Layers, ScanLine, Sparkles, ShieldCheck, MessageCircle, Smartphone, Monitor, MousePointer2, Utensils, HeartPulse, Armchair, CircleCheck, CircleX, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ContactButton, LeadForm } from "./contact";
+import { ContactButton } from "./contact";
 import { Brand, PerformanceChart } from "./dashboard";
 import { agencyConfig } from "@/lib/agency-config";
 import { trackEvent } from "@/lib/analytics";
@@ -83,5 +83,5 @@ export function FAQ() {
 }
 
 export function FinalContact() {
-  return <><section className="final-cta"><div className="container"><span className="eyebrow">O PRÓXIMO PASSO É SEU</span><h2>Seu próximo cliente pode estar<br/>procurando sua empresa <span>agora.</span></h2><p>Prepare sua presença digital e comece a anunciar com uma estratégia profissional.</p><ContactButton variant="inverse" size="lg" message="Olá! Quero começar com a LAUX AGÊNCIA e preparar a presença digital da minha empresa.">Quero começar com a LAUX AGÊNCIA</ContactButton><span className="final-watermark" aria-hidden="true">LAUX↗</span></div></section><section id="contato" className="section contact-section"><div className="container contact-layout"><div><span className="eyebrow">VAMOS CONSTRUIR O PRÓXIMO PASSO</span><h2>Conte um pouco<br/>sobre <em>sua empresa.</em></h2><p className="section-copy">Uma conversa para entender seu momento e encontrar a estratégia certa.</p><span className="contact-note"><MessageCircle size={18}/>Atendimento via WhatsApp</span></div><LeadForm/></div></section></>;
+  return <><section className="final-cta"><div className="container"><span className="eyebrow">O PRÓXIMO PASSO É SEU</span><h2>Seu próximo cliente pode estar<br/>procurando sua empresa <span>agora.</span></h2><p>Prepare sua presença digital e comece a anunciar com uma estratégia profissional.</p><ContactButton variant="inverse" size="lg" message="Olá! Quero começar com a LAUX AGÊNCIA e preparar a presença digital da minha empresa.">Quero começar com a LAUX AGÊNCIA</ContactButton><span className="final-watermark" aria-hidden="true">LAUX↗</span></div></section></>;
 }

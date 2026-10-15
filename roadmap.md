@@ -16,3 +16,7 @@
 - [x] Strategic CTAs wired at hero, after services/sites/simulator/pricing, footer.
 - [x] Final tests: form, mask, WhatsApp link/message, simulator, wizard, assistant, responsiveness, console errors.
 - [ ] Finalize legal documents and contractual scope — blocked on business details and legal approval.
+
+## Diagnosis reorganization
+- [ ] Remove the traditional lead form and place the existing diagnosis after the final CTA.
+- [ ] Verify anchors, all four steps, WhatsApp answers and narrow-screen layout.
