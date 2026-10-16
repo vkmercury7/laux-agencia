@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitLead } from "@/lib/leads.functions";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Building2, Check, ClipboardList, Rocket, Smartphone } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Check, ClipboardList, Rocket, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useContact } from "./contact";
-import { buildDiagnosticMessage, maskPhone, isValidPhone } from "@/lib/agency-config";
+import { maskPhone, isValidPhone } from "@/lib/agency-config";
 import { trackEvent } from "@/lib/analytics";
 
 const steps = [
@@ -27,7 +26,6 @@ function Choice({ label, value, options, onChange }: { label: string; value: str
 }
 
 export function Diagnostic() {
-  const open = useContact();
   const save = useServerFn(submitLead);
   const [step, setStep] = useState(1);
   const [data, setData] = useState<Data>(initial);
@@ -54,8 +52,6 @@ export function Diagnostic() {
           setSaved(true);
           setStep(5);
           trackEvent("complete_diagnosis", { goals: data.goals.length });
-          const msg = buildDiagnosticMessage(data);
-          if (msg) open(msg, "diagnostico");
         })
         .catch(() => setError("Não foi possível registrar seu diagnóstico agora. Tente novamente em instantes."))
         .finally(() => setSaving(false));
@@ -64,8 +60,6 @@ export function Diagnostic() {
     setError("");
     setStep(s => Math.min(4, s + 1));
   }
-
-  const message = buildDiagnosticMessage(data);
 
   return <section id="diagnostico" className="section section-tinted diagnostic-section"><div className="container">
     <div className="section-heading centered"><span className="eyebrow">DIAGNÓSTICO DIGITAL INTERATIVO</span><h2>Descubra o próximo passo para o crescimento digital da sua <em>empresa.</em></h2><p>Responda algumas perguntas e solicite uma análise inicial da sua presença digital.</p></div>
@@ -95,13 +89,12 @@ export function Diagnostic() {
           <Button variant="premium" onClick={next} disabled={saving}>{step === 4 ? (saving ? "Registrando..." : "Enviar meu diagnóstico") : "Continuar"}<ArrowRight/></Button>
         </div>
       </div>}
-      {step === 5 && <div className="wizard-done">
+      {step === 5 && saved && <div className="wizard-done" role="status">
         <span className="done-icon"><Check size={26}/></span>
-        <h3>{saved ? "Diagnóstico recebido pela LAUX!" : "Diagnóstico pronto"}</h3>
-        <p>Suas respostas foram registradas. Se o WhatsApp não abriu, toque no botão abaixo — a mensagem já vem preenchida.</p>
-        <Button variant="premium" size="lg" disabled={!message} onClick={() => message && open(message, "diagnostico")}>Enviar informações para a LAUX<ArrowUpRight/></Button>
-        <p className="fine-print">A análise inicial é uma conversa para entender o momento da sua empresa — não uma análise automática concluída. O plano apresentado é R$ 490 no primeiro mês e R$ 390 por mês depois; a mídia é paga à plataforma separadamente.</p>
-        <Button variant="link" onClick={() => { setStep(1); setData(initial); }}>Preencher novamente</Button>
+        <h3>Diagnóstico enviado com sucesso!</h3>
+        <p>Recebemos as informações da sua empresa! Nossa equipe analisará suas respostas e entrará em contato pelo WhatsApp informado no formulário.</p>
+        <p className="fine-print">Fique atento às suas mensagens. Em breve, você poderá conversar com nossa equipe sobre as melhores estratégias digitais para o seu negócio.</p>
+        <Button variant="premium" size="lg" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>Voltar ao início</Button>
       </div>}
     </div>
   </div></section>;
