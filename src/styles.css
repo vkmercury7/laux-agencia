@@ -315,3 +315,40 @@ h1 { font-size:49px; font-weight:800; line-height:1.17; letter-spacing:0; }.hero
   .tech-particles i, .assistant-pulse { animation:none; }
   .wizard-body, .wizard-done, .assistant-panel, .website-browser { animation:none; }
 }
+
+/* ===== PAINEL PRIVADO DE FORMULÁRIOS ===== */
+.admin-shell { min-height:100vh; background:var(--background); padding:28px 18px 48px; display:flex; justify-content:center; }
+.admin-container { width:100%; max-width:1140px; display:flex; flex-direction:column; gap:20px; }
+.admin-card { background:var(--card); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow-soft); }
+.admin-login { max-width:420px; width:100%; margin:auto; padding:30px; display:flex; flex-direction:column; gap:14px; }
+.admin-login h1 { display:flex; align-items:center; gap:8px; font-size:22px; font-weight:800; color:var(--foreground); }
+.admin-login p { color:var(--muted-foreground); font-size:14px; }
+.admin-login label, .admin-search { display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:600; color:var(--foreground); }
+.admin-login input, .admin-search input { border:1px solid var(--border); border-radius:11px; padding:11px 13px; font-size:15px; background:var(--background); color:var(--foreground); }
+.admin-login input:focus-visible, .admin-search input:focus-visible { outline:2px solid var(--primary); outline-offset:1px; }
+.admin-header { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.admin-header h1 { font-size:24px; font-weight:800; color:var(--foreground); }
+.admin-header p { font-size:14px; color:var(--muted-foreground); }
+.admin-header > div:nth-child(2) { flex:1; min-width:200px; }
+.admin-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.admin-stat { padding:18px; display:flex; flex-direction:column; gap:6px; }
+.admin-stat span { font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-foreground); font-weight:700; }
+.admin-stat strong { font-size:30px; font-weight:800; color:var(--primary); }
+.admin-table-card { padding:18px; }
+.admin-toolbar { display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; margin-bottom:14px; }
+.admin-search { flex:1; min-width:220px; position:relative; }
+.admin-search svg { position:absolute; left:11px; top:12px; color:var(--muted-foreground); }
+.admin-search input { padding-left:34px; }
+.admin-table-scroll { overflow-x:auto; }
+.admin-table { width:100%; border-collapse:collapse; font-size:14px; }
+.admin-table th { text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted-foreground); padding:10px 12px; border-bottom:1px solid var(--border); white-space:nowrap; }
+.admin-table td { padding:12px; border-bottom:1px solid var(--border); color:var(--foreground); white-space:nowrap; }
+.admin-table tr:hover td { background:var(--secondary); }
+.admin-empty { display:flex; align-items:center; gap:8px; justify-content:center; padding:28px; color:var(--muted-foreground); font-size:14px; }
+.admin-dialog { max-width:520px; display:flex; flex-direction:column; gap:14px; }
+.admin-answers { display:flex; flex-direction:column; gap:10px; max-height:52vh; overflow-y:auto; }
+.admin-answers div { display:flex; justify-content:space-between; gap:14px; border-bottom:1px dashed var(--border); padding-bottom:7px; }
+.admin-answers dt { font-size:13px; color:var(--muted-foreground); font-weight:600; }
+.admin-answers dd { font-size:14px; color:var(--foreground); font-weight:600; text-align:right; }
+@media (max-width:950px) { .admin-stats { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:560px) { .admin-header { gap:10px; } .admin-header h1 { font-size:20px; } }

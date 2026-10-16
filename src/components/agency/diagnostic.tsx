@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { submitLead } from "@/lib/leads.functions";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Building2, Check, ClipboardList, Rocket, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContact } from "./contact";
@@ -26,9 +28,12 @@ function Choice({ label, value, options, onChange }: { label: string; value: str
 
 export function Diagnostic() {
   const open = useContact();
+  const save = useServerFn(submitLead);
   const [step, setStep] = useState(1);
   const [data, setData] = useState<Data>(initial);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const set = (patch: Partial<Data>) => setData(prev => ({ ...prev, ...patch }));
   const toggleGoal = (goal: string) => set({ goals: data.goals.includes(goal) ? data.goals.filter(g => g !== goal) : [...data.goals, goal] });
 
@@ -43,8 +48,17 @@ export function Diagnostic() {
       if (!isValidPhone(data.phone)) { setError("Informe um WhatsApp válido com DDD."); return; }
       if (!data.location.trim() || !data.budget || !data.consent) { setError("Complete o contato, o orçamento e autorize o contato."); return; }
       setError("");
-      setStep(5);
-      trackEvent("complete_diagnosis", { goals: data.goals.length });
+      setSaving(true);
+      void save({ data: { ...data, name: data.name.trim(), company: data.company.trim(), location: data.location.trim(), consent: true } })
+        .then(() => {
+          setSaved(true);
+          setStep(5);
+          trackEvent("complete_diagnosis", { goals: data.goals.length });
+          const msg = buildDiagnosticMessage(data);
+          if (msg) open(msg, "diagnostico");
+        })
+        .catch(() => setError("Não foi possível registrar seu diagnóstico agora. Tente novamente em instantes."))
+        .finally(() => setSaving(false));
       return;
     }
     setError("");
@@ -78,13 +92,13 @@ export function Diagnostic() {
         {error && <p role="alert" className="text-destructive">{error}</p>}
         <div className="wizard-nav">
           {step > 1 && <Button variant="ghost" onClick={() => { setError(""); setStep(s => s - 1); }}><ArrowLeft/>Voltar</Button>}
-          <Button variant="premium" onClick={next}>{step === 4 ? "Revisar meu diagnóstico" : "Continuar"}<ArrowRight/></Button>
+          <Button variant="premium" onClick={next} disabled={saving}>{step === 4 ? (saving ? "Registrando..." : "Enviar meu diagnóstico") : "Continuar"}<ArrowRight/></Button>
         </div>
       </div>}
       {step === 5 && <div className="wizard-done">
         <span className="done-icon"><Check size={26}/></span>
-        <h3>Seu diagnóstico está pronto para ser solicitado!</h3>
-        <p>Toque no botão abaixo: o WhatsApp abre com suas respostas organizadas. Você revisa e confirma o envio — nada é enviado automaticamente.</p>
+        <h3>{saved ? "Diagnóstico recebido pela LAUX!" : "Diagnóstico pronto"}</h3>
+        <p>Suas respostas foram registradas. Se o WhatsApp não abriu, toque no botão abaixo — a mensagem já vem preenchida.</p>
         <Button variant="premium" size="lg" disabled={!message} onClick={() => message && open(message, "diagnostico")}>Enviar informações para a LAUX<ArrowUpRight/></Button>
         <p className="fine-print">A análise inicial é uma conversa para entender o momento da sua empresa — não uma análise automática concluída. O plano apresentado é R$ 490 no primeiro mês e R$ 390 por mês depois; a mídia é paga à plataforma separadamente.</p>
         <Button variant="link" onClick={() => { setStep(1); setData(initial); }}>Preencher novamente</Button>

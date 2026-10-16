@@ -20,3 +20,9 @@
 ## Diagnosis reorganization
 - [x] Remove the traditional lead form and place the existing diagnosis after the final CTA.
 - [x] Verify anchors, all four steps, WhatsApp answers and narrow-screen layout.
+
+## Painel privado de formulários
+- [x] Banco de dados com a tabela de leads protegida (só o administrador lê).
+- [x] Diagnóstico grava a resposta antes de abrir o WhatsApp, com antiduplicidade por telefone/hora.
+- [x] Login privado em /admin com indicadores, busca, ordenação, modal de respostas e botão WhatsApp.
+- [x] Testes: envio, gravação, login, bloqueio de não autorizados, celular.
