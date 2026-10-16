@@ -16,6 +16,7 @@ import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminEquipeRouteImport } from './routes/_authenticated/admin_.equipe'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -51,6 +52,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminEquipeRoute =
+  AuthenticatedAdminEquipeRouteImport.update({
+    id: '/admin_/equipe',
+    path: '/admin/equipe',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -67,6 +75,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,13 +86,27 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin_/equipe': typeof AuthenticatedAdminEquipeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/privacidade' | '/reset-password' | '/termos' | '/admin'
+    | '/'
+    | '/auth'
+    | '/privacidade'
+    | '/reset-password'
+    | '/termos'
+    | '/admin'
+    | '/admin/equipe'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/privacidade' | '/reset-password' | '/termos' | '/admin'
+  to:
+    | '/'
+    | '/auth'
+    | '/privacidade'
+    | '/reset-password'
+    | '/termos'
+    | '/admin'
+    | '/admin/equipe'
   id:
     | '__root__'
     | '/'
@@ -93,6 +116,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/_authenticated/admin'
+    | '/_authenticated/admin_/equipe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -155,15 +179,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/equipe': {
+      id: '/_authenticated/admin_/equipe'
+      path: '/admin/equipe'
+      fullPath: '/admin/equipe'
+      preLoaderRoute: typeof AuthenticatedAdminEquipeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminEquipeRoute: typeof AuthenticatedAdminEquipeRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminEquipeRoute: AuthenticatedAdminEquipeRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -60,9 +60,8 @@ export const submitLead = createServerFn({ method: "POST" })
 export const listLeads = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("can_view_leads", {
       _user_id: context.userId,
-      _role: "admin",
     });
     if (roleError || !isAdmin) throw new Error("Forbidden");
 
