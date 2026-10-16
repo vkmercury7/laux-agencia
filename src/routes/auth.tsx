@@ -26,6 +26,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -45,6 +46,18 @@ function AuthPage() {
       return;
     }
     void navigate({ to: "/admin", replace: true });
+  }
+
+  async function forgot() {
+    setError("");
+    if (!email.trim()) {
+      setError("Digite seu e-mail acima para receber o link.");
+      return;
+    }
+    await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setInfo("Se o e-mail estiver cadastrado, você receberá um link para criar uma nova senha.");
   }
 
   return (
@@ -68,10 +81,14 @@ function AuthPage() {
             {error}
           </p>
         )}
+        {info && <p role="status">{info}</p>}
         <Button type="submit" variant="premium" disabled={loading}>
           {loading ? "Entrando..." : "Entrar"}
           <LogIn />
         </Button>
+        <button type="button" className="text-sm underline" onClick={forgot}>
+          Esqueci minha senha
+        </button>
       </form>
     </main>
   );
