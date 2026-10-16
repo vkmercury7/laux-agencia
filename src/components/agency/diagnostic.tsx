@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { submitLead } from "@/lib/leads.functions";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Building2, Check, ClipboardList, Rocket, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContact } from "./contact";
@@ -26,9 +28,12 @@ function Choice({ label, value, options, onChange }: { label: string; value: str
 
 export function Diagnostic() {
   const open = useContact();
+  const save = useServerFn(submitLead);
   const [step, setStep] = useState(1);
   const [data, setData] = useState<Data>(initial);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const set = (patch: Partial<Data>) => setData(prev => ({ ...prev, ...patch }));
   const toggleGoal = (goal: string) => set({ goals: data.goals.includes(goal) ? data.goals.filter(g => g !== goal) : [...data.goals, goal] });
 
