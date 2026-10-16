@@ -10,6 +10,8 @@
 <!-- LOVABLE:END -->
 
 ## Application architecture
+- Diagnosis submissions are stored by the public server function in `src/lib/leads.functions.ts` (validated, deduplicated, service-role insert) and read only by an admin-role server function; the browser never queries leads directly, so credentials and lead data stay server-side.
+- Admin-only screens live under `src/routes/_authenticated/`; the admin role comes from `public.user_roles` + `has_role`, never from client state.
 - Keep the agency experience at the index route and compose domain sections from `src/components/agency`; this separates interactive experiences from route metadata.
 - Keep configurable contact information, website scope and commercial calculations in `src/lib/agency-config.ts`; this provides one source of truth for future configuration and pricing tests.
 - Contact actions use a shared provider (`useContact`) that tracks the click and opens wa.me with contextual encoded messages; an invalid number falls back to an honest copy-message dialog instead of a fabricated destination or success state.
