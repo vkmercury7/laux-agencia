@@ -48,8 +48,17 @@ export function Diagnostic() {
       if (!isValidPhone(data.phone)) { setError("Informe um WhatsApp válido com DDD."); return; }
       if (!data.location.trim() || !data.budget || !data.consent) { setError("Complete o contato, o orçamento e autorize o contato."); return; }
       setError("");
-      setStep(5);
-      trackEvent("complete_diagnosis", { goals: data.goals.length });
+      setSaving(true);
+      void save({ data: { ...data, name: data.name.trim(), company: data.company.trim(), location: data.location.trim(), consent: true } })
+        .then(() => {
+          setSaved(true);
+          setStep(5);
+          trackEvent("complete_diagnosis", { goals: data.goals.length });
+          const msg = buildDiagnosticMessage(data);
+          if (msg) open(msg, "diagnostico");
+        })
+        .catch(() => setError("Não foi possível registrar seu diagnóstico agora. Tente novamente em instantes."))
+        .finally(() => setSaving(false));
       return;
     }
     setError("");
