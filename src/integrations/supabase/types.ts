@@ -62,6 +62,66 @@ export type Database = {
         }
         Relationships: []
       }
+      team_audit: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          details: Json
+          id: string
+          target_email: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          target_email: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          target_email?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          email: string
+          id: string
+          invited_at: string
+          invited_by: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          invited_at?: string
+          invited_by?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          invited_at?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -85,6 +145,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_view_leads: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

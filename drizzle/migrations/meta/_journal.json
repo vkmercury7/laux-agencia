@@ -15,6 +15,13 @@
       "when": 1792166699873,
       "tag": "0001_team_roles_enum",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792166715892,
+      "tag": "0002_team_members",
+      "breakpoints": true
     }
   ]
 }
