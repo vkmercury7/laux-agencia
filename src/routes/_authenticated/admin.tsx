@@ -1,12 +1,13 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowUpDown, Eye, Inbox, LogOut, MessageCircle, Search } from "lucide-react";
+import { ArrowUpDown, Users, Eye, Inbox, LogOut, MessageCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Brand } from "@/components/agency/dashboard";
 import { listLeads } from "@/lib/leads.functions";
+import { getMyAccess } from "@/lib/team.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -36,6 +37,8 @@ function AdminPage() {
   const [desc, setDesc] = useState(true);
   const [selected, setSelected] = useState<Lead | null>(null);
 
+  const fetchAccess = useServerFn(getMyAccess);
+  const { data: access } = useQuery({ queryKey: ["access"], queryFn: () => fetchAccess() });
   const { data, isLoading, error } = useQuery({ queryKey: ["leads"], queryFn: () => fetchLeads() });
 
   const leads = useMemo(() => {
@@ -81,6 +84,11 @@ function AdminPage() {
             <h1>Formulários recebidos</h1>
             <p>Diagnósticos enviados pelos visitantes do site.</p>
           </div>
+          {access?.isSuper && (
+            <Button variant="ghost" asChild>
+              <Link to="/admin/equipe"><Users /> Equipe</Link>
+            </Button>
+          )}
           <Button variant="ghost" onClick={signOut}>
             <LogOut /> Sair
           </Button>
