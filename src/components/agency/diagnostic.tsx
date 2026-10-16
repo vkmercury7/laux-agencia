@@ -92,13 +92,13 @@ export function Diagnostic() {
         {error && <p role="alert" className="text-destructive">{error}</p>}
         <div className="wizard-nav">
           {step > 1 && <Button variant="ghost" onClick={() => { setError(""); setStep(s => s - 1); }}><ArrowLeft/>Voltar</Button>}
-          <Button variant="premium" onClick={next}>{step === 4 ? "Revisar meu diagnóstico" : "Continuar"}<ArrowRight/></Button>
+          <Button variant="premium" onClick={next} disabled={saving}>{step === 4 ? (saving ? "Registrando..." : "Enviar meu diagnóstico") : "Continuar"}<ArrowRight/></Button>
         </div>
       </div>}
       {step === 5 && <div className="wizard-done">
         <span className="done-icon"><Check size={26}/></span>
-        <h3>Seu diagnóstico está pronto para ser solicitado!</h3>
-        <p>Toque no botão abaixo: o WhatsApp abre com suas respostas organizadas. Você revisa e confirma o envio — nada é enviado automaticamente.</p>
+        <h3>{saved ? "Diagnóstico recebido pela LAUX!" : "Diagnóstico pronto"}</h3>
+        <p>Suas respostas foram registradas. Se o WhatsApp não abriu, toque no botão abaixo — a mensagem já vem preenchida.</p>
         <Button variant="premium" size="lg" disabled={!message} onClick={() => message && open(message, "diagnostico")}>Enviar informações para a LAUX<ArrowUpRight/></Button>
         <p className="fine-print">A análise inicial é uma conversa para entender o momento da sua empresa — não uma análise automática concluída. O plano apresentado é R$ 490 no primeiro mês e R$ 390 por mês depois; a mídia é paga à plataforma separadamente.</p>
         <Button variant="link" onClick={() => { setStep(1); setData(initial); }}>Preencher novamente</Button>
