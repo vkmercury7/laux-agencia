@@ -352,3 +352,28 @@ h1 { font-size:49px; font-weight:800; line-height:1.17; letter-spacing:0; }.hero
 .admin-answers dd { font-size:14px; color:var(--foreground); font-weight:600; text-align:right; }
 @media (max-width:950px) { .admin-stats { grid-template-columns:repeat(2,1fr); } }
 @media (max-width:560px) { .admin-header { gap:10px; } .admin-header h1 { font-size:20px; } }
+
+/* Agendamentos */
+.ag-filters { flex-wrap: wrap; gap: .5rem; }
+.ag-input { width: 100%; min-height: 2.5rem; border: 1px solid var(--border); border-radius: .75rem; background: var(--background); padding: .45rem .7rem; font: inherit; color: var(--foreground); }
+.ag-filters .ag-input { width: auto; }
+.ag-dialog { max-height: 90vh; overflow-y: auto; max-width: 46rem; }
+.ag-form { display: grid; gap: 1rem; }
+.ag-form fieldset { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .75rem; border: 1px solid var(--border); border-radius: 1rem; padding: .9rem; }
+.ag-form legend { font-weight: 700; padding: 0 .4rem; color: var(--primary); }
+.ag-form label { display: grid; gap: .3rem; font-size: .85rem; font-weight: 600; }
+.ag-full { grid-column: 1 / -1; }
+.ag-buttons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .5rem; }
+.ag-actions { white-space: nowrap; }
+.ag-badge { display: inline-block; border-radius: 999px; padding: .2rem .6rem; font-size: .75rem; font-weight: 700; }
+.ag-agendada { background: oklch(0.93 0.05 250); color: oklch(0.45 0.18 255); }
+.ag-confirmada, .ag-realizada { background: oklch(0.94 0.06 150); color: oklch(0.45 0.14 150); }
+.ag-nao_compareceu { background: oklch(0.94 0.07 70); color: oklch(0.52 0.15 55); }
+.ag-cancelada { background: color-mix(in oklab, var(--primary) 12%, transparent); color: var(--primary); }
+@media (max-width: 760px) {
+  .ag-table thead { display: none; }
+  .ag-table tr { display: grid; gap: .25rem; padding: .8rem; border-bottom: 1px solid var(--border); }
+  .ag-table td { display: flex; justify-content: space-between; gap: 1rem; border: 0; padding: .15rem 0; }
+  .ag-table td[data-label]::before { content: attr(data-label); font-weight: 600; color: var(--muted-foreground); }
+  .ag-filters .ag-input { width: 100%; }
+}
