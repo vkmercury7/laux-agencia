@@ -36,6 +36,13 @@
       "when": 1792273332090,
       "tag": "0004_leads_sales_funnel",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792274461561,
+      "tag": "0005_restrict_funnel_column_updates",
+      "breakpoints": true
     }
   ]
 }
