@@ -98,13 +98,17 @@ export type Database = {
         Row: {
           advertises: string
           budget: string
+          closing_notes: string | null
           company: string
           consent: boolean
+          contract_value: number | null
           created_at: string
+          funnel_stage: string
           goals: string[]
           has_site: string
           id: string
           location: string
+          loss_reason: string | null
           name: string
           phone: string
           segment: string
@@ -113,13 +117,17 @@ export type Database = {
         Insert: {
           advertises: string
           budget: string
+          closing_notes?: string | null
           company: string
           consent?: boolean
+          contract_value?: number | null
           created_at?: string
+          funnel_stage?: string
           goals?: string[]
           has_site: string
           id?: string
           location: string
+          loss_reason?: string | null
           name: string
           phone: string
           segment: string
@@ -128,13 +136,17 @@ export type Database = {
         Update: {
           advertises?: string
           budget?: string
+          closing_notes?: string | null
           company?: string
           consent?: boolean
+          contract_value?: number | null
           created_at?: string
+          funnel_stage?: string
           goals?: string[]
           has_site?: string
           id?: string
           location?: string
+          loss_reason?: string | null
           name?: string
           phone?: string
           segment?: string
