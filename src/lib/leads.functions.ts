@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { funnelUpdateSchema, funnelChanges } from "@/lib/funnel";
 
 const leadSchema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -31,8 +32,9 @@ export const submitLead = createServerFn({ method: "POST" })
       .eq("phone", data.phone)
       .gte("created_at", hourAgo);
     if (recentError) throw new Error("Não foi possível registrar agora. Tente novamente.");
-    if (recent && recent.length > 0) {
-      return { ok: true as const, duplicate: true as const, id: recent[0]!.id };
+    const duplicate = recent?.[0];
+    if (duplicate) {
+      return { ok: true as const, duplicate: true as const, id: duplicate.id };
     }
 
     const { data: inserted, error } = await supabaseAdmin
@@ -72,4 +74,16 @@ export const listLeads = createServerFn({ method: "POST" })
       .limit(1000);
     if (error) throw new Error("Não foi possível carregar os formulários.");
     return data;
+  });
+
+export const updateLeadFunnel = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => funnelUpdateSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: allowed, error: roleError } = await context.supabase.rpc("can_view_leads", { _user_id: context.userId });
+    if (roleError || !allowed) throw new Error("Acesso não autorizado.");
+    const { data: lead, error } = await context.supabase.from("leads")
+      .update(funnelChanges(data)).eq("id", data.id).select("*").single();
+    if (error || !lead) throw new Error("Não foi possível salvar a etapa. Tente novamente.");
+    return lead;
   });

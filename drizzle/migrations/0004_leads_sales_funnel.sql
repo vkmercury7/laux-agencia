@@ -1,0 +1,9 @@
+ALTER TABLE public.leads ADD COLUMN funnel_stage text NOT NULL DEFAULT 'novo_lead', ADD COLUMN contract_value numeric(14,2), ADD COLUMN closing_notes text, ADD COLUMN loss_reason text;
+ALTER TABLE public.leads ADD CONSTRAINT leads_funnel_stage_check CHECK (funnel_stage IN ('novo_lead','em_contato','reuniao_marcada','proposta_enviada','fechado','perdido')), ADD CONSTRAINT leads_contract_value_check CHECK (contract_value IS NULL OR contract_value >= 0), ADD CONSTRAINT leads_closing_notes_check CHECK (closing_notes IS NULL OR length(closing_notes) <= 2000), ADD CONSTRAINT leads_loss_reason_check CHECK (loss_reason IS NULL OR length(loss_reason) <= 2000);
+GRANT SELECT ON public.leads TO authenticated;
+GRANT UPDATE (funnel_stage, contract_value, closing_notes, loss_reason) ON public.leads TO authenticated;
+GRANT ALL ON public.leads TO service_role;
+CREATE POLICY "Team updates lead funnel" ON public.leads FOR UPDATE TO authenticated USING (public.can_view_leads(auth.uid())) WITH CHECK (public.can_view_leads(auth.uid()));
+CREATE FUNCTION public.agendamento_update_lead_funnel() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$ BEGIN IF NEW.lead_id IS NOT NULL THEN UPDATE public.leads SET funnel_stage = 'reuniao_marcada' WHERE id = NEW.lead_id AND funnel_stage NOT IN ('fechado','perdido'); END IF; RETURN NEW; END; $$;
+REVOKE ALL ON FUNCTION public.agendamento_update_lead_funnel() FROM PUBLIC, anon, authenticated;
+CREATE TRIGGER agendamento_created_lead_funnel AFTER INSERT ON public.agendamentos FOR EACH ROW EXECUTE FUNCTION public.agendamento_update_lead_funnel();

@@ -1,4 +1,9 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
+## Funil de vendas 1.0
+- [ ] Reutilizar leads com etapas, dados opcionais de fechamento/perda e integração automática com agendamentos.
+- [ ] Adicionar /admin/funil e acesso no painel, reutilizando a visualização de respostas.
+- [ ] Verificar persistência, permissões, regras de agendamento e layout em computador/celular.
+
 - [x] Verify and prevent mixed React dependency generations causing a blank preview.
 - [x] Establish white/red design system and visual architecture informed by LAUX AI.
 - [x] Build all institutional sections, interactive demonstrations, simulator, pricing and FAQ.
