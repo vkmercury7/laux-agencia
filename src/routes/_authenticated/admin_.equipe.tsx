@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Send, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Brand } from "@/components/agency/dashboard";
+import { AdminHeader } from "@/components/agency/admin-nav";
 import { changeRole, getMyAccess, inviteMember, listTeam, resendInvite, revokeMember } from "@/lib/team.functions";
 
 export const Route = createFileRoute("/_authenticated/admin_/equipe")({
@@ -72,15 +72,9 @@ function TeamPage() {
   return (
     <main className="admin-shell">
       <div className="admin-container">
-        <header className="admin-header">
-          <Brand />
-          <div>
-            <h1>Equipe</h1>
-            <p>Convide pessoas e controle quem acessa os formulários.</p>
-          </div>
-          <Button variant="ghost" asChild><Link to="/admin"><ArrowLeft /> Formulários</Link></Button>
+        <AdminHeader title="Equipe" subtitle="Convide pessoas e controle quem acessa os formulários.">
           <Button variant="premium" onClick={() => { setMsg(null); setOpen(true); }}><UserPlus /> Convidar membro</Button>
-        </header>
+        </AdminHeader>
 
         {msg && <p role={msg.ok ? "status" : "alert"} className={msg.ok ? "admin-empty" : "admin-empty text-destructive"}>{msg.text}</p>}
 

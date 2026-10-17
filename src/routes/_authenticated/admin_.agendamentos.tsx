@@ -1,11 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, CalendarDays, Columns3, Eye, MessageCircle, Pencil, Plus, Search, XCircle } from "lucide-react";
+import { CalendarDays, Eye, MessageCircle, Pencil, Plus, Search, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Brand } from "@/components/agency/dashboard";
+import { AdminHeader } from "@/components/agency/admin-nav";
 import { listLeads } from "@/lib/leads.functions";
 import {
   listAgendamentos, listResponsaveis, saveAgendamento, setAgendamentoStatus, STATUS,
@@ -164,16 +164,9 @@ function AgendamentosPage() {
   return (
     <main className="admin-shell">
       <div className="admin-container">
-        <header className="admin-header">
-          <Brand />
-          <div>
-            <h1><CalendarDays size={22} className="inline text-primary" /> Agendamentos</h1>
-            <p>Reuniões comerciais da equipe (horário de Brasília).</p>
-          </div>
-          <Button variant="ghost" asChild><Link to="/admin"><ArrowLeft /> Formulários</Link></Button>
-          <Button variant="ghost" asChild><Link to="/admin/funil"><Columns3 /> Funil de Vendas</Link></Button>
+        <AdminHeader title={<><CalendarDays size={22} className="inline text-primary" /> Agendamentos</>} subtitle="Reuniões comerciais da equipe (horário de Brasília).">
           <Button variant="premium" onClick={openNew}><Plus /> Novo agendamento</Button>
-        </header>
+        </AdminHeader>
 
         <div className="admin-stats">
           {([["Reuniões de hoje", stats.hoje], ["Próximas reuniões", stats.proximas], ["Realizadas", stats.realizadas], ["Canceladas", stats.canceladas]] as const).map(([l, v]) => (

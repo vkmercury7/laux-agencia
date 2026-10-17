@@ -1,12 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, CalendarDays, Columns3, MessageCircle, Pencil, Save, Search } from "lucide-react";
+import { Columns3, MessageCircle, Pencil, Save, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Brand } from "@/components/agency/dashboard";
+import { AdminHeader } from "@/components/agency/admin-nav";
 import { LeadDetails, type Lead } from "@/components/agency/lead-details";
 import { listLeads, updateLeadFunnel } from "@/lib/leads.functions";
 import { FUNNEL_STAGES, STAGE_LABEL, leadStage, leadWhatsApp, type FunnelStage, type FunnelUpdate } from "@/lib/funnel";
@@ -57,11 +57,7 @@ function FunnelPage() {
   }
   return <main className="admin-shell">
     <div className="admin-container funnel-container">
-      <header className="admin-header">
-        <Brand /><div><h1><Columns3 size={22} className="inline text-primary" /> Funil de Vendas</h1></div>
-        <Button variant="ghost" asChild><Link to="/admin"><ArrowLeft /> Formulários</Link></Button>
-        <Button variant="ghost" asChild><Link to="/admin/agendamentos"><CalendarDays /> Agendamentos</Link></Button>
-      </header>
+      <AdminHeader title={<><Columns3 size={22} className="inline text-primary" /> Funil de Vendas</>} />
       <div className="admin-toolbar">
         <label className="admin-search"><Search size={16} /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar cliente, empresa ou WhatsApp" aria-label="Buscar cliente, empresa ou WhatsApp" /></label>
         <span className="text-sm text-muted-foreground">{data.length} {data.length === 1 ? "lead" : "leads"}</span>
