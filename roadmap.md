@@ -1,4 +1,8 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
+## Dashboard comercial e vendas
+- [ ] Criar vendas/pagamentos com permissões e integração ao funil.
+- [ ] Adicionar registro, edição, detalhes e dashboard com filtros reais.
+- [ ] Testar cálculos, persistência, permissões e navegação.
 ## Funil de vendas 1.0
 - [x] Reutilizar leads com etapas, dados opcionais de fechamento/perda e integração automática com agendamentos.
 - [x] Adicionar /admin/funil e acesso no painel, reutilizando a visualização de respostas.
