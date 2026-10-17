@@ -397,3 +397,23 @@ h1 { font-size:49px; font-weight:800; line-height:1.17; letter-spacing:0; }.hero
   .ag-table td[data-label]::before { content: attr(data-label); font-weight: 600; color: var(--muted-foreground); }
   .ag-filters .ag-input { width: 100%; }
 }
+
+/* ===== Navegação do painel (botões) ===== */
+.admin-brand { text-decoration:none; }
+.admin-brand .brand-word { font-size:24px; }
+.admin-brand .brand-sub { font-size:8px; letter-spacing:.16em; color:var(--muted-foreground); }
+.admin-nav { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.admin-nav-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:42px; padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--background); color:var(--foreground); font-size:14px; font-weight:600; line-height:1; text-decoration:none; cursor:pointer; font-family:inherit; transition:border-color .18s ease, background .18s ease, color .18s ease; }
+.admin-nav-btn:hover { border-color:color-mix(in oklab, var(--primary) 45%, var(--border)); background:var(--secondary); color:var(--primary); }
+.admin-nav-btn.active { border-color:color-mix(in oklab, var(--primary) 40%, var(--border)); background:color-mix(in oklab, var(--primary) 10%, var(--background)); color:var(--primary); }
+.admin-nav-btn.active:hover { background:color-mix(in oklab, var(--primary) 14%, var(--background)); }
+.admin-nav-sep { width:1px; align-self:stretch; margin:5px 4px; background:var(--border); }
+.admin-nav-exit { color:var(--muted-foreground); }
+.admin-nav-exit:hover { color:var(--destructive); border-color:color-mix(in oklab, var(--destructive) 40%, var(--border)); background:color-mix(in oklab, var(--destructive) 8%, var(--background)); }
+@media (max-width:950px) { .admin-header > div:nth-child(2) { min-width:150px; } }
+@media (max-width:560px) {
+  .admin-nav { width:100%; gap:6px; }
+  .admin-nav-btn { flex:1 1 auto; padding:9px 10px; font-size:12.5px; min-height:40px; }
+  .admin-nav-sep { display:none; }
+  .admin-nav-exit { flex:0 0 auto; }
+}
