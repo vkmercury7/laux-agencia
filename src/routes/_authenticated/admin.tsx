@@ -2,9 +2,9 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowUpDown, CalendarDays, Users, Eye, Inbox, LogOut, MessageCircle, Search } from "lucide-react";
+import { ArrowUpDown, CalendarDays, Columns3, Users, Eye, Inbox, LogOut, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { LeadDetails } from "@/components/agency/lead-details";
 import { Brand } from "@/components/agency/dashboard";
 import { listLeads } from "@/lib/leads.functions";
 import { getMyAccess } from "@/lib/team.functions";
@@ -73,8 +73,6 @@ function AdminPage() {
     void navigate({ to: "/auth", replace: true });
   }
 
-  const waLink = (phone: string) => `https://wa.me/55${phone.replace(/\D/g, "")}`;
-
   return (
     <main className="admin-shell">
       <div className="admin-container">
@@ -86,6 +84,9 @@ function AdminPage() {
           </div>
           <Button variant="ghost" asChild>
             <Link to="/admin/agendamentos"><CalendarDays /> Agendamentos</Link>
+          </Button>
+          <Button variant="ghost" asChild>
+            <Link to="/admin/funil"><Columns3 /> Funil de Vendas</Link>
           </Button>
           {access?.isSuper && (
             <Button variant="ghost" asChild>
@@ -174,43 +175,7 @@ function AdminPage() {
         </div>
       </div>
 
-      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
-        <DialogContent className="admin-dialog">
-          <DialogTitle>Respostas de {selected?.name}</DialogTitle>
-          <DialogDescription>
-            Enviado em {selected ? dateTime.format(new Date(selected.created_at)) : ""}
-          </DialogDescription>
-          {selected && (
-            <dl className="admin-answers">
-              {[
-                ["Nome", selected.name],
-                ["Empresa", selected.company],
-                ["Segmento", selected.segment],
-                ["Possui site", selected.has_site],
-                ["Utiliza Instagram", selected.uses_instagram],
-                ["Já anuncia", selected.advertises],
-                ["Objetivos", selected.goals.join(", ")],
-                ["WhatsApp", selected.phone],
-                ["Localização", selected.location],
-                ["Orçamento para anúncios", selected.budget],
-                ["Autorizou contato", selected.consent ? "Sim" : "Não"],
-              ].map(([label, value]) => (
-                <div key={label}>
-                  <dt>{label}</dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-          {selected && (
-            <Button variant="premium" asChild>
-              <a href={waLink(selected.phone)} target="_blank" rel="noopener noreferrer">
-                <MessageCircle /> Conversar no WhatsApp
-              </a>
-            </Button>
-          )}
-        </DialogContent>
-      </Dialog>
+      <LeadDetails lead={selected} onClose={() => setSelected(null)} />
     </main>
   );
 }
