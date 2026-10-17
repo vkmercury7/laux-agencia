@@ -154,6 +154,112 @@ export type Database = {
         }
         Relationships: []
       }
+      sale_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          history: Json
+          id: string
+          method: string
+          received_on: string | null
+          sale_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          history?: Json
+          id?: string
+          method?: string
+          received_on?: string | null
+          sale_id: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          history?: Json
+          id?: string
+          method?: string
+          received_on?: string | null
+          sale_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sale_payments_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales: {
+        Row: {
+          closed_on: string
+          contract_status: string
+          contract_type: string
+          created_at: string
+          id: string
+          initial_value: number
+          lead_id: string
+          monthly_value: number
+          notes: string
+          seller_email: string
+          seller_id: string
+          service: string
+          starts_on: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          closed_on: string
+          contract_status?: string
+          contract_type: string
+          created_at?: string
+          id?: string
+          initial_value: number
+          lead_id: string
+          monthly_value?: number
+          notes?: string
+          seller_email?: string
+          seller_id: string
+          service: string
+          starts_on: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          closed_on?: string
+          contract_status?: string
+          contract_type?: string
+          created_at?: string
+          id?: string
+          initial_value?: number
+          lead_id?: string
+          monthly_value?: number
+          notes?: string
+          seller_email?: string
+          seller_id?: string
+          service?: string
+          starts_on?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_audit: {
         Row: {
           action: string
@@ -238,6 +344,8 @@ export type Database = {
     }
     Functions: {
       can_view_leads: { Args: { _user_id: string }; Returns: boolean }
+      crm_is_admin: { Args: never; Returns: boolean }
+      crm_register_sale: { Args: { payload: Json }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
