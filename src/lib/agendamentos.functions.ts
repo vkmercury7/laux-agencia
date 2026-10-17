@@ -60,7 +60,7 @@ export const listAgendamentos = createServerFn({ method: "POST" })
       .order("data_hora_inicio", { ascending: true })
       .limit(2000);
     if (error) throw new Error("Não foi possível carregar os agendamentos.");
-    return data as Array<{
+    return data as unknown as Array<{
       id: string; lead_id: string | null; nome_cliente: string; empresa: string | null; whatsapp: string;
       segmento: string | null; servico: string | null; data_hora_inicio: string; duracao_minutos: number;
       responsavel_id: string; responsavel_email: string; modalidade: string; link_reuniao: string | null;
@@ -113,7 +113,7 @@ export const saveAgendamento = createServerFn({ method: "POST" })
     }
     const { data: cur } = await context.supabase.from("agendamentos").select("data_hora_inicio, historico").eq("id", data.id).single();
     if (!cur) throw new Error("Agendamento não encontrado.");
-    const historico = [...(cur.historico ?? [])];
+    const historico: any[] = [...((cur.historico as any[]) ?? [])];
     if (new Date(cur.data_hora_inicio).getTime() !== new Date(inicio).getTime())
       historico.push({ em: new Date().toISOString(), acao: "remarcado", de: cur.data_hora_inicio, para: inicio });
     else historico.push({ em: new Date().toISOString(), acao: "editado" });
@@ -129,7 +129,7 @@ export const setAgendamentoStatus = createServerFn({ method: "POST" })
     await requireTeam(context);
     const { data: cur } = await context.supabase.from("agendamentos").select("status, historico").eq("id", data.id).single();
     if (!cur) throw new Error("Agendamento não encontrado.");
-    const historico = [...(cur.historico ?? []), { em: new Date().toISOString(), acao: "status", de: cur.status, para: data.status }];
+    const historico: any[] = [...((cur.historico as any[]) ?? []), { em: new Date().toISOString(), acao: "status", de: cur.status, para: data.status }];
     const { error } = await context.supabase.from("agendamentos").update({ status: data.status, historico }).eq("id", data.id);
     if (error) mapDbError(error);
     return { ok: true };
