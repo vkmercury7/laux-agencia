@@ -16,6 +16,7 @@ import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin_.agendamentos'
 import { Route as AuthenticatedAdminEquipeRouteImport } from './routes/_authenticated/admin_.equipe'
 
 const IndexRoute = IndexRouteImport.update({
@@ -52,6 +53,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminAgendamentosRoute =
+  AuthenticatedAdminAgendamentosRouteImport.update({
+    id: '/admin_/agendamentos',
+    path: '/admin/agendamentos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminEquipeRoute =
   AuthenticatedAdminEquipeRouteImport.update({
     id: '/admin_/equipe',
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
 }
 export interface FileRoutesByTo {
@@ -75,6 +83,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
 }
 export interface FileRoutesById {
@@ -86,6 +95,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin_/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/_authenticated/admin_/equipe': typeof AuthenticatedAdminEquipeRoute
 }
 export interface FileRouteTypes {
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/admin'
+    | '/admin/agendamentos'
     | '/admin/equipe'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/admin'
+    | '/admin/agendamentos'
     | '/admin/equipe'
   id:
     | '__root__'
@@ -116,6 +128,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/_authenticated/admin'
+    | '/_authenticated/admin_/agendamentos'
     | '/_authenticated/admin_/equipe'
   fileRoutesById: FileRoutesById
 }
@@ -179,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/agendamentos': {
+      id: '/_authenticated/admin_/agendamentos'
+      path: '/admin/agendamentos'
+      fullPath: '/admin/agendamentos'
+      preLoaderRoute: typeof AuthenticatedAdminAgendamentosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin_/equipe': {
       id: '/_authenticated/admin_/equipe'
       path: '/admin/equipe'
@@ -191,11 +211,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminAgendamentosRoute: typeof AuthenticatedAdminAgendamentosRoute
   AuthenticatedAdminEquipeRoute: typeof AuthenticatedAdminEquipeRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminAgendamentosRoute: AuthenticatedAdminAgendamentosRoute,
   AuthenticatedAdminEquipeRoute: AuthenticatedAdminEquipeRoute,
 }
 
