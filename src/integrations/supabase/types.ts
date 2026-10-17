@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      agendamentos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_hora_fim: string
+          data_hora_inicio: string
+          duracao_minutos: number
+          empresa: string | null
+          historico: Json
+          id: string
+          lead_id: string | null
+          link_reuniao: string | null
+          modalidade: string
+          nome_cliente: string
+          observacoes: string | null
+          origem: string | null
+          responsavel_email: string
+          responsavel_id: string
+          segmento: string | null
+          servico: string | null
+          status: string
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_hora_fim: string
+          data_hora_inicio: string
+          duracao_minutos?: number
+          empresa?: string | null
+          historico?: Json
+          id?: string
+          lead_id?: string | null
+          link_reuniao?: string | null
+          modalidade?: string
+          nome_cliente: string
+          observacoes?: string | null
+          origem?: string | null
+          responsavel_email: string
+          responsavel_id: string
+          segmento?: string | null
+          servico?: string | null
+          status?: string
+          updated_at?: string
+          whatsapp: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_hora_fim?: string
+          data_hora_inicio?: string
+          duracao_minutos?: number
+          empresa?: string | null
+          historico?: Json
+          id?: string
+          lead_id?: string | null
+          link_reuniao?: string | null
+          modalidade?: string
+          nome_cliente?: string
+          observacoes?: string | null
+          origem?: string | null
+          responsavel_email?: string
+          responsavel_id?: string
+          segmento?: string | null
+          servico?: string | null
+          status?: string
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agendamentos_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           advertises: string

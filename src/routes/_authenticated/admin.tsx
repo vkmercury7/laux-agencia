@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowUpDown, Users, Eye, Inbox, LogOut, MessageCircle, Search } from "lucide-react";
+import { ArrowUpDown, CalendarDays, Users, Eye, Inbox, LogOut, MessageCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Brand } from "@/components/agency/dashboard";
@@ -84,6 +84,9 @@ function AdminPage() {
             <h1>Formulários recebidos</h1>
             <p>Diagnósticos enviados pelos visitantes do site.</p>
           </div>
+          <Button variant="ghost" asChild>
+            <Link to="/admin/agendamentos"><CalendarDays /> Agendamentos</Link>
+          </Button>
           {access?.isSuper && (
             <Button variant="ghost" asChild>
               <Link to="/admin/equipe"><Users /> Equipe</Link>
