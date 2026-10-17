@@ -21,3 +21,5 @@
 - Pre-optimize browser UI dependencies and reject outdated optimized requests in Vite; open previews must reload rather than mix React instances from different dependency generations.
 
 - Render the existing Diagnostic once at the end of the index content, after FinalContact; all lead-capture anchors target diagnostico to avoid duplicate forms.
+- Store funnel fields on existing leads and update them through authenticated, column-granted operations; an INSERT trigger on appointments synchronizes linked stages atomically without modifying appointments from funnel actions.
+- Reuse LeadDetails for form and funnel response dialogs, and use the existing Select control instead of adding drag-and-drop dependencies to keep the CRM small.

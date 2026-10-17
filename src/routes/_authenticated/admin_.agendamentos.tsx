@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, CalendarDays, Eye, MessageCircle, Pencil, Plus, Search, XCircle } from "lucide-react";
+import { ArrowLeft, CalendarDays, Columns3, Eye, MessageCircle, Pencil, Plus, Search, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Brand } from "@/components/agency/dashboard";
@@ -137,7 +137,7 @@ function AgendamentosPage() {
     setSaving(true); setFormError("");
     try {
       await save({ data: { ...form, duracao_minutos: Number(form.duracao_minutos) } });
-      setForm(null); await refresh();
+      setForm(null); await Promise.all([refresh(), qc.invalidateQueries({ queryKey: ["leads"] })]);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Não foi possível salvar.");
     } finally { setSaving(false); }
@@ -171,6 +171,7 @@ function AgendamentosPage() {
             <p>Reuniões comerciais da equipe (horário de Brasília).</p>
           </div>
           <Button variant="ghost" asChild><Link to="/admin"><ArrowLeft /> Formulários</Link></Button>
+          <Button variant="ghost" asChild><Link to="/admin/funil"><Columns3 /> Funil de Vendas</Link></Button>
           <Button variant="premium" onClick={openNew}><Plus /> Novo agendamento</Button>
         </header>
 
