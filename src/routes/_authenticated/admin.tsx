@@ -1,14 +1,12 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowUpDown, CalendarDays, Columns3, Users, Eye, Inbox, LogOut, Search } from "lucide-react";
+import { ArrowUpDown, Eye, Inbox, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LeadDetails } from "@/components/agency/lead-details";
-import { Brand } from "@/components/agency/dashboard";
+import { AdminHeader } from "@/components/agency/admin-nav";
 import { listLeads } from "@/lib/leads.functions";
-import { getMyAccess } from "@/lib/team.functions";
-import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -31,14 +29,10 @@ const dateTime = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyl
 
 function AdminPage() {
   const fetchLeads = useServerFn(listLeads);
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [desc, setDesc] = useState(true);
   const [selected, setSelected] = useState<Lead | null>(null);
 
-  const fetchAccess = useServerFn(getMyAccess);
-  const { data: access } = useQuery({ queryKey: ["access"], queryFn: () => fetchAccess() });
   const { data, isLoading, error } = useQuery({ queryKey: ["leads"], queryFn: () => fetchLeads() });
 
   const leads = useMemo(() => {
@@ -66,37 +60,11 @@ function AdminPage() {
     };
   }, [data]);
 
-  async function signOut() {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    void navigate({ to: "/auth", replace: true });
-  }
 
   return (
     <main className="admin-shell">
       <div className="admin-container">
-        <header className="admin-header">
-          <Brand />
-          <div>
-            <h1>Formulários recebidos</h1>
-            <p>Diagnósticos enviados pelos visitantes do site.</p>
-          </div>
-          <Button variant="ghost" asChild>
-            <Link to="/admin/agendamentos"><CalendarDays /> Agendamentos</Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link to="/admin/funil"><Columns3 /> Funil de Vendas</Link>
-          </Button>
-          {access?.isSuper && (
-            <Button variant="ghost" asChild>
-              <Link to="/admin/equipe"><Users /> Equipe</Link>
-            </Button>
-          )}
-          <Button variant="ghost" onClick={signOut}>
-            <LogOut /> Sair
-          </Button>
-        </header>
+        <AdminHeader title="Formulários recebidos" subtitle="Diagnósticos enviados pelos visitantes do site." />
 
         <div className="admin-stats">
           {[
