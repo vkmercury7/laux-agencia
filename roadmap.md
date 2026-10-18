@@ -1,4 +1,8 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
+## Cargos e Gestão de Tráfego
+- [ ] Atualizar cargos e proteger acessos por responsabilidade, preservando administrador principal.
+- [ ] Adicionar gestores, campanhas, resultados e atividades ligados aos clientes existentes.
+- [ ] Testar permissões, cálculos e fluxo real de cadastro.
 ## Portfólio digital
 - [x] Adicionar referências do PDF após serviços, com filtros locais e expansão dos cards.
 - [x] Verificar filtros, links e layout no computador e celular.
