@@ -24,3 +24,5 @@
 - Store funnel fields on existing leads and update them through authenticated, column-granted operations; an INSERT trigger on appointments synchronizes linked stages atomically without modifying appointments from funnel actions.
 - Reuse LeadDetails for form and funnel response dialogs, and use the existing Select control instead of adding drag-and-drop dependencies to keep the CRM small.
 - Commercial routes share one paginated authenticated Query dataset; sales/payment writes enforce ownership and immutable receipt history through database triggers, with atomic idempotent initial registration.
+- CRM activities are appended atomically by source-table triggers; browser roles cannot write events and receipt state changes only through a principal-admin checked RPC, preventing forged authors and duplicate success logs.
+- The shared AdminHeader owns desktop/sidebar and mobile drawer navigation plus the notification bell; /admin redirects to the existing dashboard and forms live at /admin/formularios, preserving page bodies and calculations.

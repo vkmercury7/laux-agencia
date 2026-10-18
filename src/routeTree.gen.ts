@@ -17,10 +17,12 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin_.agendamentos'
+import { Route as AuthenticatedAdminAtividadesRouteImport } from './routes/_authenticated/admin_.atividades'
 import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authenticated/admin_.clientes'
 import { Route as AuthenticatedAdminContratosRouteImport } from './routes/_authenticated/admin_.contratos'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin_.dashboard'
 import { Route as AuthenticatedAdminEquipeRouteImport } from './routes/_authenticated/admin_.equipe'
+import { Route as AuthenticatedAdminFormulariosRouteImport } from './routes/_authenticated/admin_.formularios'
 import { Route as AuthenticatedAdminFunilRouteImport } from './routes/_authenticated/admin_.funil'
 import { Route as AuthenticatedAdminVendasRouteImport } from './routes/_authenticated/admin_.vendas'
 
@@ -64,6 +66,12 @@ const AuthenticatedAdminAgendamentosRoute =
     path: '/admin/agendamentos',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminAtividadesRoute =
+  AuthenticatedAdminAtividadesRouteImport.update({
+    id: '/admin_/atividades',
+    path: '/admin/atividades',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminClientesRoute =
   AuthenticatedAdminClientesRouteImport.update({
     id: '/admin_/clientes',
@@ -88,6 +96,12 @@ const AuthenticatedAdminEquipeRoute =
     path: '/admin/equipe',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminFormulariosRoute =
+  AuthenticatedAdminFormulariosRouteImport.update({
+    id: '/admin_/formularios',
+    path: '/admin/formularios',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminFunilRoute = AuthenticatedAdminFunilRouteImport.update({
   id: '/admin_/funil',
   path: '/admin/funil',
@@ -108,10 +122,12 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/atividades': typeof AuthenticatedAdminAtividadesRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/contratos': typeof AuthenticatedAdminContratosRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/admin/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
   '/admin/vendas': typeof AuthenticatedAdminVendasRoute
 }
@@ -123,10 +139,12 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/atividades': typeof AuthenticatedAdminAtividadesRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/contratos': typeof AuthenticatedAdminContratosRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/admin/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
   '/admin/vendas': typeof AuthenticatedAdminVendasRoute
 }
@@ -140,10 +158,12 @@ export interface FileRoutesById {
   '/termos': typeof TermosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/admin_/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/_authenticated/admin_/atividades': typeof AuthenticatedAdminAtividadesRoute
   '/_authenticated/admin_/clientes': typeof AuthenticatedAdminClientesRoute
   '/_authenticated/admin_/contratos': typeof AuthenticatedAdminContratosRoute
   '/_authenticated/admin_/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin_/equipe': typeof AuthenticatedAdminEquipeRoute
+  '/_authenticated/admin_/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/_authenticated/admin_/funil': typeof AuthenticatedAdminFunilRoute
   '/_authenticated/admin_/vendas': typeof AuthenticatedAdminVendasRoute
 }
@@ -157,10 +177,12 @@ export interface FileRouteTypes {
     | '/termos'
     | '/admin'
     | '/admin/agendamentos'
+    | '/admin/atividades'
     | '/admin/clientes'
     | '/admin/contratos'
     | '/admin/dashboard'
     | '/admin/equipe'
+    | '/admin/formularios'
     | '/admin/funil'
     | '/admin/vendas'
   fileRoutesByTo: FileRoutesByTo
@@ -172,10 +194,12 @@ export interface FileRouteTypes {
     | '/termos'
     | '/admin'
     | '/admin/agendamentos'
+    | '/admin/atividades'
     | '/admin/clientes'
     | '/admin/contratos'
     | '/admin/dashboard'
     | '/admin/equipe'
+    | '/admin/formularios'
     | '/admin/funil'
     | '/admin/vendas'
   id:
@@ -188,10 +212,12 @@ export interface FileRouteTypes {
     | '/termos'
     | '/_authenticated/admin'
     | '/_authenticated/admin_/agendamentos'
+    | '/_authenticated/admin_/atividades'
     | '/_authenticated/admin_/clientes'
     | '/_authenticated/admin_/contratos'
     | '/_authenticated/admin_/dashboard'
     | '/_authenticated/admin_/equipe'
+    | '/_authenticated/admin_/formularios'
     | '/_authenticated/admin_/funil'
     | '/_authenticated/admin_/vendas'
   fileRoutesById: FileRoutesById
@@ -263,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAgendamentosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/atividades': {
+      id: '/_authenticated/admin_/atividades'
+      path: '/admin/atividades'
+      fullPath: '/admin/atividades'
+      preLoaderRoute: typeof AuthenticatedAdminAtividadesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin_/clientes': {
       id: '/_authenticated/admin_/clientes'
       path: '/admin/clientes'
@@ -291,6 +324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminEquipeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/formularios': {
+      id: '/_authenticated/admin_/formularios'
+      path: '/admin/formularios'
+      fullPath: '/admin/formularios'
+      preLoaderRoute: typeof AuthenticatedAdminFormulariosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin_/funil': {
       id: '/_authenticated/admin_/funil'
       path: '/admin/funil'
@@ -311,10 +351,12 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAdminAgendamentosRoute: typeof AuthenticatedAdminAgendamentosRoute
+  AuthenticatedAdminAtividadesRoute: typeof AuthenticatedAdminAtividadesRoute
   AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRoute
   AuthenticatedAdminContratosRoute: typeof AuthenticatedAdminContratosRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminEquipeRoute: typeof AuthenticatedAdminEquipeRoute
+  AuthenticatedAdminFormulariosRoute: typeof AuthenticatedAdminFormulariosRoute
   AuthenticatedAdminFunilRoute: typeof AuthenticatedAdminFunilRoute
   AuthenticatedAdminVendasRoute: typeof AuthenticatedAdminVendasRoute
 }
@@ -322,10 +364,12 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAdminAgendamentosRoute: AuthenticatedAdminAgendamentosRoute,
+  AuthenticatedAdminAtividadesRoute: AuthenticatedAdminAtividadesRoute,
   AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRoute,
   AuthenticatedAdminContratosRoute: AuthenticatedAdminContratosRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminEquipeRoute: AuthenticatedAdminEquipeRoute,
+  AuthenticatedAdminFormulariosRoute: AuthenticatedAdminFormulariosRoute,
   AuthenticatedAdminFunilRoute: AuthenticatedAdminFunilRoute,
   AuthenticatedAdminVendasRoute: AuthenticatedAdminVendasRoute,
 }

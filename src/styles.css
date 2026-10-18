@@ -487,3 +487,54 @@ h1 { font-size:49px; font-weight:800; line-height:1.17; letter-spacing:0; }.hero
 .installment-cancelado{background:oklch(0.95 0.03 25);color:var(--primary)}
 .installment-pay{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
 .installment-pay input{padding:.35rem .5rem;border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem}
+
+/* Shared CRM sidebar, activity timeline and diagnosis notifications */
+.admin-shell:has(.admin-sidebar) { padding:32px 32px 48px 280px; background:var(--muted); }
+.admin-sidebar { position:fixed; inset:0 auto 0 0; z-index:30; width:248px; display:flex; flex-direction:column; padding:30px 18px 20px; border-right:1px solid var(--border); background:var(--background); overflow-y:auto; }
+.admin-sidebar .admin-brand,.admin-mobile-sidebar .admin-brand { margin:0 12px 36px; flex-shrink:0; }
+.admin-sidebar .admin-nav,.admin-mobile-sidebar .admin-nav { display:flex; flex-direction:column; align-items:stretch; gap:28px; width:100%; flex:1; }
+.admin-nav-group { display:grid; gap:5px; }
+.admin-nav-group h2 { font-size:10px; font-weight:800; color:var(--muted-foreground); padding:0 12px 8px; }
+.admin-sidebar .admin-nav-btn,.admin-mobile-sidebar .admin-nav-btn { width:100%; justify-content:flex-start; border:1px solid transparent; border-radius:6px; padding:11px 12px; min-height:44px; height:44px; font-size:13px; font-weight:600; gap:12px; background:transparent; }
+.admin-sidebar .admin-nav-btn:hover,.admin-mobile-sidebar .admin-nav-btn:hover { background:var(--accent); color:var(--accent-foreground); }
+.admin-sidebar .admin-nav-btn.active,.admin-mobile-sidebar .admin-nav-btn.active { background:var(--secondary); color:var(--primary); border-color:var(--secondary); }
+.admin-nav-administration { margin-top:auto; padding-top:22px; border-top:1px solid var(--border); }
+.admin-sidebar .admin-nav-exit,.admin-mobile-sidebar .admin-nav-exit { margin-top:12px; color:var(--muted-foreground); }
+.crm-header { min-height:62px; padding-bottom:20px; border-bottom:1px solid var(--border); gap:16px; }
+.crm-header .admin-heading { flex:1; min-width:0; }
+.crm-header h1 { overflow-wrap:anywhere; font-size:24px; }
+.admin-menu-toggle { display:none; }
+.admin-mobile-sidebar { width:min(300px,86vw); max-width:300px; padding:28px 18px; display:flex; flex-direction:column; overflow-y:auto; }
+.notification-bell { position:relative; flex-shrink:0; }
+.notification-count { position:absolute; top:-7px; right:-7px; background:var(--primary); color:var(--primary-foreground); min-width:20px; padding:2px 5px; border-radius:10px; font-size:10px; line-height:16px; text-align:center; }
+.notification-popover { width:min(360px,calc(100vw - 24px)); padding:16px; }
+.notification-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+.notification-heading h2 { font-size:15px; font-weight:800; }
+.notification-list { list-style:none; padding:0; margin:0; max-height:400px; overflow-y:auto; }
+.notification-list li { display:flex; align-items:center; gap:6px; border-top:1px solid var(--border); padding:8px 0; }
+.notification-open { display:flex; flex-direction:column; align-items:start; gap:4px; height:auto; white-space:normal; flex:1; min-width:0; text-align:left; overflow-wrap:anywhere; padding:8px; }
+.notification-open span,.notification-open time { font-size:12px; color:var(--muted-foreground); }
+.activity-toolbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; color:var(--muted-foreground); font-size:13px; }
+.activity-select { width:260px; max-width:100%; background:var(--background); }
+.activity-timeline { list-style:none; margin:8px 0; padding:0; }
+.activity-timeline > li { display:flex; gap:18px; position:relative; padding-bottom:24px; }
+.activity-timeline > li:not(:last-child)::before { content:''; position:absolute; left:17px; top:36px; bottom:0; width:1px; background:var(--border); }
+.activity-marker { width:36px; height:36px; border-radius:6px; background:var(--secondary); color:var(--primary); display:grid; place-items:center; flex-shrink:0; }
+.activity-content { flex:1; min-width:0; border-bottom:1px solid var(--border); padding:3px 0 22px; overflow-wrap:anywhere; }
+.activity-meta { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:9px; }
+.activity-meta strong { color:var(--primary); font-size:12px; }
+.activity-meta time,.activity-content small { font-size:12px; color:var(--muted-foreground); }
+.activity-content h2 { font-size:15px; font-weight:700; }
+.activity-content h2 span { font-weight:400; }
+.activity-content p { font-size:13px; margin:5px 0; color:var(--muted-foreground); }
+.activity-pagination { display:flex; justify-content:flex-end; align-items:center; gap:14px; font-size:12px; }
+@media(max-width:900px) {
+  .admin-sidebar { display:none; }
+  .admin-shell:has(.admin-sidebar) { padding:20px 16px 40px; }
+  .admin-menu-toggle { display:inline-flex; flex-shrink:0; }
+  .crm-header { gap:12px; }
+  .crm-header .admin-heading { min-width:0; }
+  .crm-header h1 { font-size:20px; }
+  .crm-header p { font-size:12px; }
+  .crm-header > button:last-child:not(.notification-bell):not(.admin-menu-toggle) { max-width:100%; }
+}

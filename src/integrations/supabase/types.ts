@@ -195,6 +195,51 @@ export type Database = {
           },
         ]
       }
+      crm_activities: {
+        Row: {
+          actor_id: string | null
+          actor_name: string | null
+          client_name: string
+          company: string
+          created_at: string
+          description: string
+          entity_id: string
+          id: string
+          lead_id: string | null
+          owner_id: string | null
+          read_at: string | null
+          type: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_name?: string | null
+          client_name?: string
+          company?: string
+          created_at?: string
+          description: string
+          entity_id: string
+          id?: string
+          lead_id?: string | null
+          owner_id?: string | null
+          read_at?: string | null
+          type: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_name?: string | null
+          client_name?: string
+          company?: string
+          created_at?: string
+          description?: string
+          entity_id?: string
+          id?: string
+          lead_id?: string | null
+          owner_id?: string | null
+          read_at?: string | null
+          type?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           advertises: string
@@ -461,6 +506,11 @@ export type Database = {
     Functions: {
       can_view_leads: { Args: { _user_id: string }; Returns: boolean }
       crm_is_admin: { Args: never; Returns: boolean }
+      crm_is_notification_admin: { Args: never; Returns: boolean }
+      crm_mark_notifications_read: {
+        Args: { ids: string[] }
+        Returns: undefined
+      }
       crm_register_sale: { Args: { payload: Json }; Returns: string }
       has_role: {
         Args: {
