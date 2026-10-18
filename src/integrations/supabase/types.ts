@@ -481,6 +481,132 @@ export type Database = {
         }
         Relationships: []
       }
+      traffic_campaigns: {
+        Row: {
+          budget: number
+          id: string
+          lead_id: string
+          name: string
+          notes: string
+          objective: string
+          platform: string
+          starts_on: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          budget?: number
+          id?: string
+          lead_id: string
+          name: string
+          notes?: string
+          objective?: string
+          platform: string
+          starts_on: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          budget?: number
+          id?: string
+          lead_id?: string
+          name?: string
+          notes?: string
+          objective?: string
+          platform?: string
+          starts_on?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "traffic_campaigns_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "traffic_clients"
+            referencedColumns: ["lead_id"]
+          },
+        ]
+      }
+      traffic_clients: {
+        Row: {
+          lead_id: string
+          manager_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          lead_id: string
+          manager_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          lead_id?: string
+          manager_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "traffic_clients_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      traffic_results: {
+        Row: {
+          campaign_id: string
+          clicks: number | null
+          conversions: number | null
+          created_at: string
+          ends_on: string
+          id: string
+          impressions: number | null
+          leads: number | null
+          notes: string
+          reach: number | null
+          spend: number
+          starts_on: string
+        }
+        Insert: {
+          campaign_id: string
+          clicks?: number | null
+          conversions?: number | null
+          created_at?: string
+          ends_on: string
+          id?: string
+          impressions?: number | null
+          leads?: number | null
+          notes?: string
+          reach?: number | null
+          spend: number
+          starts_on: string
+        }
+        Update: {
+          campaign_id?: string
+          clicks?: number | null
+          conversions?: number | null
+          created_at?: string
+          ends_on?: string
+          id?: string
+          impressions?: number | null
+          leads?: number | null
+          notes?: string
+          reach?: number | null
+          spend?: number
+          starts_on?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "traffic_results_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "traffic_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -505,6 +631,12 @@ export type Database = {
     }
     Functions: {
       can_view_leads: { Args: { _user_id: string }; Returns: boolean }
+      crm_can_read_lead: { Args: { lid: string }; Returns: boolean }
+      crm_can_sell: { Args: { uid: string }; Returns: boolean }
+      crm_has_any_role: {
+        Args: { roles: string[]; uid: string }
+        Returns: boolean
+      }
       crm_is_admin: { Args: never; Returns: boolean }
       crm_is_notification_admin: { Args: never; Returns: boolean }
       crm_mark_notifications_read: {
@@ -519,9 +651,33 @@ export type Database = {
         }
         Returns: boolean
       }
+      traffic_access: { Args: { lid: string }; Returns: boolean }
+      traffic_add_note: {
+        Args: { description: string; lid: string }
+        Returns: undefined
+      }
+      traffic_client_info: {
+        Args: never
+        Returns: {
+          company: string
+          id: string
+          manager_email: string
+          manager_id: string
+          name: string
+          service: string
+          updated_at: string
+        }[]
+      }
     }
     Enums: {
-      app_role: "admin" | "super_admin" | "collaborator"
+      app_role:
+        | "admin"
+        | "super_admin"
+        | "collaborator"
+        | "seller"
+        | "sdr"
+        | "attendant"
+        | "traffic_manager"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -649,7 +805,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "super_admin", "collaborator"],
+      app_role: [
+        "admin",
+        "super_admin",
+        "collaborator",
+        "seller",
+        "sdr",
+        "attendant",
+        "traffic_manager",
+      ],
     },
   },
 } as const
