@@ -64,6 +64,13 @@
       "when": 1792289879440,
       "tag": "0008_leads_guard_team_service_fix",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792290890519,
+      "tag": "0009_crm_contracts",
+      "breakpoints": true
     }
   ]
 }
