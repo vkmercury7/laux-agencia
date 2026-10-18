@@ -15,6 +15,7 @@ describe.skipIf(!url||!key)('Sales database rules',()=>{
   const email=`sales-test-${crypto.randomUUID()}@example.com`;const password=crypto.randomUUID()+crypto.randomUUID();
   const {data:created,error:createError}=await db.auth.admin.createUser({email,password,email_confirm:true});if(createError||!created.user)throw new Error('Temporary test account unavailable');const uid=created.user.id;temporaryUsers.push(uid);
   await db.from('user_roles').insert({user_id:uid,role:'collaborator'});
+  await db.from('leads').update({assigned_to:uid}).eq('id',leadId);
   const {data:publicKey,error:keysError}=await db.auth.admin.listUsers();if(keysError||!publicKey)throw new Error('Auth unavailable');
   const userDb=createClient(url||'http://localhost',key||'unused',{auth:{persistSession:false}});
   const {error:loginError}=await userDb.auth.signInWithPassword({email,password});if(loginError)throw new Error('Temporary seller sign-in failed');
@@ -23,8 +24,10 @@ describe.skipIf(!url||!key)('Sales database rules',()=>{
   expect((await userDb.from('sales').select('id').eq('id',saleId)).data).toEqual([]);
   expect((await userDb.from('sales').update({seller_id:sellerId}).eq('id',id)).error).not.toBeNull();
   expect((await userDb.from('sales').update({status:'cancelada'}).eq('id',id)).error).not.toBeNull();
-  const {data:p,error:paymentError}=await userDb.from('sale_payments').insert({sale_id:id,amount:50,status:'pago',received_on:'2026-10-17'}).select('id').single();expect(paymentError).toBeNull();if(!p)throw new Error('Payment missing');
-  expect((await userDb.from('sale_payments').update({amount:20}).eq('id',p.id)).error).not.toBeNull();
+  expect((await userDb.from('sale_payments').insert({sale_id:id,amount:50,status:'pago',received_on:'2026-10-17'})).error).not.toBeNull();
+  const {data:p,error:paymentError}=await db.from('sale_payments').insert({sale_id:id,amount:50,status:'pago',received_on:'2026-10-17'}).select('id').single();expect(paymentError).toBeNull();if(!p)throw new Error('Payment missing');
+  await userDb.from('sale_payments').update({amount:20}).eq('id',p.id);
+  expect((await db.from('sale_payments').select('amount').eq('id',p.id).single()).data?.amount).toBe(50);
   expect((await userDb.from('sales').insert({...row,id:crypto.randomUUID(),seller_id:sellerId})).error).not.toBeNull();
  });
 });
