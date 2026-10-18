@@ -1,0 +1,21 @@
+import { describe,it,expect } from 'vitest';
+import { salesMetrics,saleSchema,paymentSchema,parseMoney,type MetricSale } from '@/lib/sales';
+const base:MetricSale={id:'a',lead_id:'l1',seller_id:'s1',closed_on:'2026-10-17',initial_value:490.25,monthly_value:390,contract_type:'recorrente',starts_on:'2026-10-01',contract_status:'ativo',status:'valida'};
+const sales=[base,{...base,id:'b',initial_value:100,contract_type:'unico',monthly_value:0},{...base,id:'c',lead_id:'l2',status:'cancelada',initial_value:999},{...base,id:'d',lead_id:'l2',closed_on:'2026-09-01',monthly_value:50,contract_status:'encerrado'},{...base,id:'e',lead_id:'l3',seller_id:'s2',initial_value:200,monthly_value:80,starts_on:'2026-11-01'}];
+const payments=[{sale_id:'a',amount:200.10,status:'pago',received_on:'2026-10-17'},{sale_id:'b',amount:100,status:'pendente',received_on:null},{sale_id:'c',amount:40,status:'pago',received_on:'2026-10-17'},{sale_id:'a',amount:70,status:'cancelado',received_on:null},{sale_id:'d',amount:30,status:'pago',received_on:'2026-10-17'},{sale_id:'a',amount:90,status:'pago',received_on:'2026-09-17'}];
+const leads=['l1','l2','l3','l4'].map(id=>({id,created_at:'2026-10-17T10:00:00Z'}));
+const metrics=(seller='')=>salesMetrics(sales,payments,leads,[], '2026-10-01','2026-10-31',seller,'2026-10-17');
+describe('Commercial rules',()=>{
+ it('counts valid sales, never cancelled sales',()=>expect(metrics().count).toBe(3));
+ it('sold amount sums initial values once, not future monthly fees',()=>expect(metrics().total).toBe(790.25));
+ it('received revenue uses paid partial amounts and receipt dates, preserving money after sale cancellation',()=>expect(metrics().received).toBe(270.10));
+ it('MRR includes only currently active started recurring contracts',()=>expect(metrics().mrr).toBe(390));
+ it('ticket divides sold value by valid sale count',()=>expect(metrics().ticket).toBe(790.25/3));
+ it('conversion uses distinct leads divided by all leads',()=>expect(metrics().conversion).toBe(50));
+ it('seller filter applies to sales and linked payments',()=>{expect(metrics('s1').count).toBe(2);expect(metrics('s1').total).toBe(590.25);});
+ it('custom closing dates do not filter received revenue by sale date',()=>{const m=salesMetrics(sales,payments,leads,[],'2026-09-01','2026-09-30','','2026-10-17');expect(m.count).toBe(1);expect(m.received).toBe(90);});
+ it('empty data returns zero instead of fabricated records',()=>expect(salesMetrics([],[],[],[],'','','','2026-10-17')).toMatchObject({count:0,total:0,received:0,mrr:0,ticket:0,conversion:0}));
+ it('money accepts Brazilian reais and cents',()=>{expect(parseMoney('1.234,56')).toBe(1234.56);expect(parseMoney('490,25')).toBe(490.25);});
+ it('sale requires a real lead UUID',()=>expect(saleSchema.safeParse({...base,id:'00000000-0000-4000-8000-000000000001',seller_id:'00000000-0000-4000-8000-000000000002',lead_id:'client name',service:'Site',notes:''}).success).toBe(false));
+ it('paid payment requires receipt date',()=>expect(paymentSchema.safeParse({amount:10,status:'pago',received_on:null,method:''}).success).toBe(false));
+});

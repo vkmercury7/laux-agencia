@@ -17,8 +17,10 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin_.agendamentos'
+import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin_.dashboard'
 import { Route as AuthenticatedAdminEquipeRouteImport } from './routes/_authenticated/admin_.equipe'
 import { Route as AuthenticatedAdminFunilRouteImport } from './routes/_authenticated/admin_.funil'
+import { Route as AuthenticatedAdminVendasRouteImport } from './routes/_authenticated/admin_.vendas'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -60,6 +62,12 @@ const AuthenticatedAdminAgendamentosRoute =
     path: '/admin/agendamentos',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminDashboardRoute =
+  AuthenticatedAdminDashboardRouteImport.update({
+    id: '/admin_/dashboard',
+    path: '/admin/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminEquipeRoute =
   AuthenticatedAdminEquipeRouteImport.update({
     id: '/admin_/equipe',
@@ -71,6 +79,12 @@ const AuthenticatedAdminFunilRoute = AuthenticatedAdminFunilRouteImport.update({
   path: '/admin/funil',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminVendasRoute =
+  AuthenticatedAdminVendasRouteImport.update({
+    id: '/admin_/vendas',
+    path: '/admin/vendas',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,8 +94,10 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
+  '/admin/vendas': typeof AuthenticatedAdminVendasRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,8 +107,10 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
+  '/admin/vendas': typeof AuthenticatedAdminVendasRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,8 +122,10 @@ export interface FileRoutesById {
   '/termos': typeof TermosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/admin_/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/_authenticated/admin_/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin_/equipe': typeof AuthenticatedAdminEquipeRoute
   '/_authenticated/admin_/funil': typeof AuthenticatedAdminFunilRoute
+  '/_authenticated/admin_/vendas': typeof AuthenticatedAdminVendasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,8 +137,10 @@ export interface FileRouteTypes {
     | '/termos'
     | '/admin'
     | '/admin/agendamentos'
+    | '/admin/dashboard'
     | '/admin/equipe'
     | '/admin/funil'
+    | '/admin/vendas'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,8 +150,10 @@ export interface FileRouteTypes {
     | '/termos'
     | '/admin'
     | '/admin/agendamentos'
+    | '/admin/dashboard'
     | '/admin/equipe'
     | '/admin/funil'
+    | '/admin/vendas'
   id:
     | '__root__'
     | '/'
@@ -140,8 +164,10 @@ export interface FileRouteTypes {
     | '/termos'
     | '/_authenticated/admin'
     | '/_authenticated/admin_/agendamentos'
+    | '/_authenticated/admin_/dashboard'
     | '/_authenticated/admin_/equipe'
     | '/_authenticated/admin_/funil'
+    | '/_authenticated/admin_/vendas'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -211,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAgendamentosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/dashboard': {
+      id: '/_authenticated/admin_/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AuthenticatedAdminDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin_/equipe': {
       id: '/_authenticated/admin_/equipe'
       path: '/admin/equipe'
@@ -225,21 +258,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFunilRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/vendas': {
+      id: '/_authenticated/admin_/vendas'
+      path: '/admin/vendas'
+      fullPath: '/admin/vendas'
+      preLoaderRoute: typeof AuthenticatedAdminVendasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAdminAgendamentosRoute: typeof AuthenticatedAdminAgendamentosRoute
+  AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminEquipeRoute: typeof AuthenticatedAdminEquipeRoute
   AuthenticatedAdminFunilRoute: typeof AuthenticatedAdminFunilRoute
+  AuthenticatedAdminVendasRoute: typeof AuthenticatedAdminVendasRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAdminAgendamentosRoute: AuthenticatedAdminAgendamentosRoute,
+  AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminEquipeRoute: AuthenticatedAdminEquipeRoute,
   AuthenticatedAdminFunilRoute: AuthenticatedAdminFunilRoute,
+  AuthenticatedAdminVendasRoute: AuthenticatedAdminVendasRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
