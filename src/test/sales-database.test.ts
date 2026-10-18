@@ -4,10 +4,27 @@ const url=process.env['SUPABASE_URL'];const key=process.env['SUPABASE_SERVICE_RO
 describe.skipIf(!url||!key)('Sales database rules',()=>{
  const db=createClient(url||'http://localhost',key||'unused',{auth:{persistSession:false},global:{fetch:(input,init)=>{const h=new Headers(init?.headers);if(key?.startsWith('sb_')&&h.get('Authorization')===`Bearer ${key}`)h.delete('Authorization');if(key)h.set('apikey',key);return fetch(input,{...init,headers:h});}}});
  let leadId='';let sellerId='';const saleId=crypto.randomUUID();
+ const temporaryUsers:string[]=[];const temporarySales:string[]=[];
  beforeAll(async()=>{const {data:r}=await db.from('user_roles').select('user_id').eq('role','super_admin').limit(1);sellerId=r?.[0]?.user_id??'';const {data,error}=await db.from('leads').insert({name:'Automated sales test',company:'Test only',segment:'Serviços',has_site:'Não',uses_instagram:'Não',advertises:'Nunca',goals:['Teste'],phone:'(22) 99999-0031',location:'Test',budget:'Teste',consent:true,funnel_stage:'perdido'}).select('id').single();if(error)throw error;leadId=data.id;});
- afterAll(async()=>{await db.from('sale_payments').delete().eq('sale_id',saleId);await db.from('sales').delete().eq('id',saleId);if(leadId)await db.from('leads').delete().eq('id',leadId);});
+ afterAll(async()=>{for(const id of temporarySales){await db.from('sale_payments').delete().eq('sale_id',id);await db.from('sales').delete().eq('id',id);}for(const id of temporaryUsers)await db.auth.admin.deleteUser(id);await db.from('sale_payments').delete().eq('sale_id',saleId);await db.from('sales').delete().eq('id',saleId);if(leadId)await db.from('leads').delete().eq('id',leadId);});
  it('requires a real lead',async()=>{const {error}=await db.from('sales').insert({id:crypto.randomUUID(),lead_id:crypto.randomUUID(),seller_id:sellerId,service:'X',closed_on:'2026-10-17',initial_value:1,contract_type:'unico',starts_on:'2026-10-17'});expect(error).not.toBeNull();});
  it('stores the authorized seller and closes the linked lead',async()=>{const {error}=await db.from('sales').insert({id:saleId,lead_id:leadId,seller_id:sellerId,service:'Site',closed_on:'2026-10-17',initial_value:490.25,monthly_value:390,contract_type:'recorrente',starts_on:'2026-10-17'});expect(error).toBeNull();const [{data:sale},{data:lead}]=await Promise.all([db.from('sales').select('seller_email').eq('id',saleId).single(),db.from('leads').select('funnel_stage').eq('id',leadId).single()]);expect(sale?.seller_email).toContain('@');expect(lead?.funnel_stage).toBe('fechado');});
  it('keeps payment correction history',async()=>{const {data}=await db.from('sale_payments').insert({sale_id:saleId,amount:100,status:'pago',received_on:'2026-10-17'}).select('id').single();if(!data)throw new Error('Test payment missing');await db.from('sale_payments').update({amount:90}).eq('id',data.id);const {data:p}=await db.from('sale_payments').select('history').eq('id',data.id).single();expect(p?.history).toHaveLength(1);});
  it('cancellation preserves the sale and does not mark the lead lost',async()=>{await db.from('sales').update({status:'cancelada'}).eq('id',saleId);const [{data:sale},{data:lead}]=await Promise.all([db.from('sales').select('status').eq('id',saleId).single(),db.from('leads').select('funnel_stage').eq('id',leadId).single()]);expect(sale?.status).toBe('cancelada');expect(lead?.funnel_stage).toBe('fechado');});
+ it('collaborators own their sales and cannot reassign, cancel or correct paid amounts',async()=>{
+  const email=`sales-test-${crypto.randomUUID()}@example.com`;const password=crypto.randomUUID()+crypto.randomUUID();
+  const {data:created,error:createError}=await db.auth.admin.createUser({email,password,email_confirm:true});if(createError||!created.user)throw new Error('Temporary test account unavailable');const uid=created.user.id;temporaryUsers.push(uid);
+  await db.from('user_roles').insert({user_id:uid,role:'collaborator'});
+  const {data:publicKey,error:keysError}=await db.auth.admin.listUsers();if(keysError||!publicKey)throw new Error('Auth unavailable');
+  const userDb=createClient(url||'http://localhost',key||'unused',{auth:{persistSession:false}});
+  const {error:loginError}=await userDb.auth.signInWithPassword({email,password});if(loginError)throw new Error('Temporary seller sign-in failed');
+  const id=crypto.randomUUID();temporarySales.push(id);const row={id,lead_id:leadId,seller_id:uid,service:'Test seller',closed_on:'2026-10-17',initial_value:100,contract_type:'unico',starts_on:'2026-10-17'};
+  expect((await userDb.from('sales').insert(row)).error).toBeNull();
+  expect((await userDb.from('sales').select('id').eq('id',saleId)).data).toEqual([]);
+  expect((await userDb.from('sales').update({seller_id:sellerId}).eq('id',id)).error).not.toBeNull();
+  expect((await userDb.from('sales').update({status:'cancelada'}).eq('id',id)).error).not.toBeNull();
+  const {data:p,error:paymentError}=await userDb.from('sale_payments').insert({sale_id:id,amount:50,status:'pago',received_on:'2026-10-17'}).select('id').single();expect(paymentError).toBeNull();if(!p)throw new Error('Payment missing');
+  expect((await userDb.from('sale_payments').update({amount:20}).eq('id',p.id)).error).not.toBeNull();
+  expect((await userDb.from('sales').insert({...row,id:crypto.randomUUID(),seller_id:sellerId})).error).not.toBeNull();
+ });
 });
