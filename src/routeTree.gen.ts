@@ -24,6 +24,7 @@ import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminEquipeRouteImport } from './routes/_authenticated/admin_.equipe'
 import { Route as AuthenticatedAdminFormulariosRouteImport } from './routes/_authenticated/admin_.formularios'
 import { Route as AuthenticatedAdminFunilRouteImport } from './routes/_authenticated/admin_.funil'
+import { Route as AuthenticatedAdminGestaoTrafegoRouteImport } from './routes/_authenticated/admin_.gestao-trafego'
 import { Route as AuthenticatedAdminVendasRouteImport } from './routes/_authenticated/admin_.vendas'
 
 const IndexRoute = IndexRouteImport.update({
@@ -107,6 +108,12 @@ const AuthenticatedAdminFunilRoute = AuthenticatedAdminFunilRouteImport.update({
   path: '/admin/funil',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminGestaoTrafegoRoute =
+  AuthenticatedAdminGestaoTrafegoRouteImport.update({
+    id: '/admin_/gestao-trafego',
+    path: '/admin/gestao-trafego',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminVendasRoute =
   AuthenticatedAdminVendasRouteImport.update({
     id: '/admin_/vendas',
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
   '/admin/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
+  '/admin/gestao-trafego': typeof AuthenticatedAdminGestaoTrafegoRoute
   '/admin/vendas': typeof AuthenticatedAdminVendasRoute
 }
 export interface FileRoutesByTo {
@@ -146,6 +154,7 @@ export interface FileRoutesByTo {
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
   '/admin/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
+  '/admin/gestao-trafego': typeof AuthenticatedAdminGestaoTrafegoRoute
   '/admin/vendas': typeof AuthenticatedAdminVendasRoute
 }
 export interface FileRoutesById {
@@ -165,6 +174,7 @@ export interface FileRoutesById {
   '/_authenticated/admin_/equipe': typeof AuthenticatedAdminEquipeRoute
   '/_authenticated/admin_/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/_authenticated/admin_/funil': typeof AuthenticatedAdminFunilRoute
+  '/_authenticated/admin_/gestao-trafego': typeof AuthenticatedAdminGestaoTrafegoRoute
   '/_authenticated/admin_/vendas': typeof AuthenticatedAdminVendasRoute
 }
 export interface FileRouteTypes {
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/admin/equipe'
     | '/admin/formularios'
     | '/admin/funil'
+    | '/admin/gestao-trafego'
     | '/admin/vendas'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/admin/equipe'
     | '/admin/formularios'
     | '/admin/funil'
+    | '/admin/gestao-trafego'
     | '/admin/vendas'
   id:
     | '__root__'
@@ -219,6 +231,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin_/equipe'
     | '/_authenticated/admin_/formularios'
     | '/_authenticated/admin_/funil'
+    | '/_authenticated/admin_/gestao-trafego'
     | '/_authenticated/admin_/vendas'
   fileRoutesById: FileRoutesById
 }
@@ -338,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFunilRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/gestao-trafego': {
+      id: '/_authenticated/admin_/gestao-trafego'
+      path: '/admin/gestao-trafego'
+      fullPath: '/admin/gestao-trafego'
+      preLoaderRoute: typeof AuthenticatedAdminGestaoTrafegoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin_/vendas': {
       id: '/_authenticated/admin_/vendas'
       path: '/admin/vendas'
@@ -358,6 +378,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminEquipeRoute: typeof AuthenticatedAdminEquipeRoute
   AuthenticatedAdminFormulariosRoute: typeof AuthenticatedAdminFormulariosRoute
   AuthenticatedAdminFunilRoute: typeof AuthenticatedAdminFunilRoute
+  AuthenticatedAdminGestaoTrafegoRoute: typeof AuthenticatedAdminGestaoTrafegoRoute
   AuthenticatedAdminVendasRoute: typeof AuthenticatedAdminVendasRoute
 }
 
@@ -371,6 +392,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminEquipeRoute: AuthenticatedAdminEquipeRoute,
   AuthenticatedAdminFormulariosRoute: AuthenticatedAdminFormulariosRoute,
   AuthenticatedAdminFunilRoute: AuthenticatedAdminFunilRoute,
+  AuthenticatedAdminGestaoTrafegoRoute: AuthenticatedAdminGestaoTrafegoRoute,
   AuthenticatedAdminVendasRoute: AuthenticatedAdminVendasRoute,
 }
 
