@@ -1,4 +1,7 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
+## Portfólio digital
+- [x] Adicionar referências do PDF após serviços, com filtros locais e expansão dos cards.
+- [ ] Verificar filtros, links e layout no computador e celular.
 ## Atividades, notificações e navegação
 - [x] Registrar eventos reais atomicamente e proteger leitura/autoria.
 - [x] Adicionar histórico e notificações persistentes do administrador principal.
