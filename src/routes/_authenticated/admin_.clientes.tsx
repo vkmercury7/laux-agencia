@@ -63,14 +63,23 @@ function ClientesPage() {
     }
     return map;
   }, [commercial]);
+  const contractsByLead = useMemo(() => {
+    const map = new Map<string, NonNullable<typeof commercial>["contracts"]>();
+    for (const c of commercial?.contracts ?? []) {
+      const list = map.get(c.lead_id) ?? [];
+      list.push(c);
+      map.set(c.lead_id, list);
+    }
+    return map;
+  }, [commercial]);
 
   const rows = useMemo(() => {
     const today = todaySP();
     return (data ?? []).map((lead) => ({
       lead,
-      situation: clientSituation(lead.funnel_stage, salesByLead.get(lead.id) ?? [], today),
+      situation: clientSituation(lead.funnel_stage, salesByLead.get(lead.id) ?? [], today, contractsByLead.get(lead.id) ?? []),
     }));
-  }, [data, salesByLead]);
+  }, [data, salesByLead, contractsByLead]);
 
   const stats = useMemo(() => ({
     total: rows.length,

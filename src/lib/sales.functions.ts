@@ -16,11 +16,13 @@ async function allRows<T>(fetchPage:(from:number,to:number)=>PromiseLike<{data:T
 }
 export const getSalesData = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
  const isAdmin=await access(context);
- const [sales,payments,leads,meetings] = await Promise.all([
- allRows((a,b)=>context.supabase.from('sales').select('*').order('id').range(a,b)),
+ const [sales,payments,leads,meetings,contracts,installments] = await Promise.all([
+  allRows((a,b)=>context.supabase.from('sales').select('*').order('id').range(a,b)),
  allRows((a,b)=>context.supabase.from('sale_payments').select('*').order('id').range(a,b)),
  allRows((a,b)=>context.supabase.from('leads').select('id,name,company,phone,created_at').order('id').range(a,b)),
  allRows((a,b)=>context.supabase.from('agendamentos').select('id,lead_id,data_hora_inicio,status,responsavel_id,nome_cliente').order('id').range(a,b)),
+ allRows((a,b)=>context.supabase.from('contracts').select('*').order('id').range(a,b)),
+ allRows((a,b)=>context.supabase.from('contract_installments').select('*').order('id').range(a,b)),
  ]);
  const sellers:{id:string;email:string}[]=[];
  if(isAdmin){
@@ -29,7 +31,7 @@ export const getSalesData = createServerFn({method:'POST'}).middleware([requireS
   if(error) throw new Error('Não foi possível carregar os vendedores.');
   for(const id of new Set((roles??[]).map(r=>r.user_id))){ const {data:ok}=await context.supabase.rpc('can_view_leads',{_user_id:id}); if(!ok)continue; const {data}=await supabaseAdmin.auth.admin.getUserById(id); if(data.user?.email)sellers.push({id,email:data.user.email}); }
  } else { const {data}=await context.supabase.auth.getUser(); if(data.user?.email)sellers.push({id:context.userId,email:data.user.email}); }
- return {sales,payments,leads,meetings,sellers,isAdmin,userId:context.userId};
+ return {sales,payments,leads,meetings,contracts,installments,sellers,isAdmin,userId:context.userId};
 });
 export const registerSale = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({sale:saleSchema,payment:paymentSchema}).parse(v)).handler(async({data,context})=>{
  const admin=await access(context); if(!admin && (data.sale.seller_id!==context.userId || data.payment.status==='cancelado'))throw new Error('Acesso não autorizado.');

@@ -94,6 +94,107 @@ export type Database = {
           },
         ]
       }
+      contract_installments: {
+        Row: {
+          amount_due: number
+          amount_received: number | null
+          contract_id: string
+          created_at: string
+          due_date: string
+          id: string
+          paid_on: string | null
+          ref_month: string
+          status: string
+        }
+        Insert: {
+          amount_due: number
+          amount_received?: number | null
+          contract_id: string
+          created_at?: string
+          due_date: string
+          id?: string
+          paid_on?: string | null
+          ref_month: string
+          status?: string
+        }
+        Update: {
+          amount_due?: number
+          amount_received?: number | null
+          contract_id?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          paid_on?: string | null
+          ref_month?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_installments_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contracts: {
+        Row: {
+          created_at: string
+          due_day: number | null
+          id: string
+          lead_id: string
+          monthly_value: number | null
+          notes: string
+          sale_id: string
+          seller_id: string
+          starts_on: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          due_day?: number | null
+          id?: string
+          lead_id: string
+          monthly_value?: number | null
+          notes?: string
+          sale_id: string
+          seller_id: string
+          starts_on: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          due_day?: number | null
+          id?: string
+          lead_id?: string
+          monthly_value?: number | null
+          notes?: string
+          sale_id?: string
+          seller_id?: string
+          starts_on?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracts_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: true
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           advertises: string
