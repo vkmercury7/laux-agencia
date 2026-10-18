@@ -1,4 +1,10 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
+## Atividades, notificações e navegação
+- [ ] Registrar eventos reais atomicamente e proteger leitura/autoria.
+- [ ] Adicionar histórico e notificações persistentes do administrador principal.
+- [ ] Abrir dashboard por padrão e substituir navegação por menu lateral/recolhível.
+- [ ] Verificar fluxos, permissões, persistência e layout.
+- [ ] Ativar e-mails de novos formulários — depende de domínio de envio configurado; não configurar integração automaticamente.
 ## Dashboard comercial e vendas
 - [ ] Criar vendas/pagamentos com permissões e integração ao funil.
 - [ ] Adicionar registro, edição, detalhes e dashboard com filtros reais.
