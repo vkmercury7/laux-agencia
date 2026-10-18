@@ -85,6 +85,13 @@
       "when": 1792331622698,
       "tag": "0011_staff_roles_traffic_management",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792331690309,
+      "tag": "0012_staff_role_atomic_guards",
+      "breakpoints": true
     }
   ]
 }

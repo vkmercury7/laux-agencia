@@ -633,6 +633,10 @@ export type Database = {
       can_view_leads: { Args: { _user_id: string }; Returns: boolean }
       crm_can_read_lead: { Args: { lid: string }; Returns: boolean }
       crm_can_sell: { Args: { uid: string }; Returns: boolean }
+      crm_change_team_role: {
+        Args: { member_id: string; new_role: string }
+        Returns: undefined
+      }
       crm_has_any_role: {
         Args: { roles: string[]; uid: string }
         Returns: boolean
