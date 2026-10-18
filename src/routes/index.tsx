@@ -9,7 +9,6 @@ import { Diagnostic } from "@/components/agency/diagnostic";
 import { Portfolio } from "@/components/agency/portfolio";
 import { Simulator } from "@/components/agency/simulator";
 import { LauxAssistant } from "@/components/agency/assistant";
-import { MobileConversionBar } from "@/components/agency/mobile-bar";
 import { trackPageView } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
@@ -40,6 +39,6 @@ function Index() {
     <div className="expertise-strip"><div className="container"><span>Da presença à performance.</span><span><Globe size={17}/>Sites profissionais</span><span><Target size={17}/>Google Ads & Meta Ads</span><span><ChartNoAxesCombined size={17}/>Estratégia orientada por dados</span><span className="strip-end">UM ECOSSISTEMA LAUX<ArrowUpRight size={14}/></span></div></div>
     <Problem/><Solutions/><Portfolio/><WebsiteDemo/><Simulator/><Process/><Pricing/><Differentials/><Ecosystem/><FAQ/><FinalContact/><Diagnostic/></main>
     <footer className="site-footer"><div className="container"><div className="footer-top"><div><a href="#inicio" aria-label="LAUX AGÊNCIA — voltar ao início"><Brand/></a><p>Estratégia, presença e tecnologia.<br/>Sua empresa pronta para o próximo passo.</p></div><div><span>EXPLORE</span><a href="#solucoes">Soluções</a><a href="#diagnostico">Diagnóstico</a><a href="#simulador">Simulador</a><a href="#planos">Plano Digital</a></div><div><span>ECOSSISTEMA</span><a href="https://lauxai-pixel-perfect.lovable.app/" target="_blank" rel="noopener noreferrer">LAUX AI<ArrowUpRight size={13}/></a><a href="#diagnostico">Contato</a><a href="#faq">Perguntas frequentes</a></div><div className="footer-signature">O digital é o caminho.<br/><em>Vamos juntos.</em><ContactButton variant="link" source="rodape">Conversar com a LAUX</ContactButton></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} LAUX AGÊNCIA. Todos os direitos reservados.</span><div><Link to="/termos">Termos de Uso</Link><Link to="/privacidade">Política de Privacidade</Link></div><span>PARTE DO ECOSSISTEMA LAUX ↗</span></div></div></footer>
-    <LauxAssistant/><MobileConversionBar/>
+    <LauxAssistant/>
   </ContactProvider>;
 }
