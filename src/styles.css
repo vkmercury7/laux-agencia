@@ -472,3 +472,18 @@ h1 { font-size:49px; font-weight:800; line-height:1.17; letter-spacing:0; }.hero
 .client-extra{display:grid;gap:.75rem;padding:.9rem 1rem;border:1px solid var(--border);border-radius:var(--radius);font-size:.9rem}
 .client-extra ul{margin:.35rem 0 0;padding-left:1.1rem;display:grid;gap:.2rem}
 .client-extra-empty{margin:.3rem 0 0;color:var(--muted-foreground)}
+
+/* Contratos (CRM) */
+.contract-ativo{background:oklch(0.92 0.05 150);color:oklch(0.35 0.1 150)}
+.contract-suspenso{background:oklch(0.93 0.04 80);color:oklch(0.4 0.1 70)}
+.contract-cancelado{background:oklch(0.95 0.03 25);color:var(--primary)}
+.contract-form{display:grid;gap:.9rem}
+.contract-installments-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.contract-installments{list-style:none;margin:.5rem 0 0;padding:0;display:grid;gap:.5rem}
+.contract-installments li{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;padding:.55rem .7rem;border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem}
+.contract-installments li.installment-overdue{border-color:var(--primary)}
+.installment-pago{background:oklch(0.92 0.05 150);color:oklch(0.35 0.1 150)}
+.installment-pendente{background:oklch(0.93 0.04 80);color:oklch(0.4 0.1 70)}
+.installment-cancelado{background:oklch(0.95 0.03 25);color:var(--primary)}
+.installment-pay{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.installment-pay input{padding:.35rem .5rem;border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem}
