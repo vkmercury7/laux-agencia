@@ -57,6 +57,13 @@
       "when": 1792289758755,
       "tag": "0007_leads_assignment_followup",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792289879440,
+      "tag": "0008_leads_guard_team_service_fix",
+      "breakpoints": true
     }
   ]
 }
