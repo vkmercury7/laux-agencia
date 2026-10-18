@@ -9,6 +9,7 @@
 export type LauxEvent =
   | "page_view"
   | "click_whatsapp"
+  | "click_diagnostico_cta"
   | "start_diagnosis"
   | "complete_diagnosis"
   | "select_ad_budget"
