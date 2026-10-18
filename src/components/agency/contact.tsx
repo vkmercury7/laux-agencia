@@ -39,3 +39,8 @@ export function ContactButton({ children, message = "Olá! Conheci a LAUX AGÊNC
   return <Button variant={variant} {...props} onClick={() => { if (analyticsEvent) trackEvent(analyticsEvent, { source }); open(message, source); }}>{children}<ArrowUpRight/></Button>;
 }
 
+/** Primary conversion CTA: scrolls to the existing Diagnostic form (#diagnostico). */
+export function DiagnosticButton({ children, source, variant = "premium", ...props }: ButtonProps & { source?: string }) {
+  return <Button asChild variant={variant} {...props}><a href="#diagnostico" onClick={() => trackEvent("click_diagnostico_cta", { source })}>{children}<ArrowUpRight/></a></Button>;
+}
+
