@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { AdminHeader } from "@/components/agency/admin-nav";
 import { LeadDetails, type Lead } from "@/components/agency/lead-details";
 import { listLeads, updateLeadFunnel } from "@/lib/leads.functions";
+import { getMyAccess } from "@/lib/team.functions";
 import { FUNNEL_STAGES, STAGE_LABEL, leadStage, leadWhatsApp, type FunnelStage, type FunnelUpdate } from "@/lib/funnel";
 
 export const Route = createFileRoute("/_authenticated/admin_/funil")({
@@ -27,6 +28,9 @@ function FunnelPage() {
   const fetchLeads = useServerFn(listLeads);
   const update = useServerFn(updateLeadFunnel);
   const qc = useQueryClient();
+  const fetchAccess = useServerFn(getMyAccess);
+  const { data: access } = useQuery({ queryKey: ["my-access"], queryFn: () => fetchAccess() });
+  const canEdit = (lead: Lead) => Boolean(access?.isAdmin || (access?.roles.some(r => ["seller", "collaborator", "sdr"].includes(r)) && lead.assigned_to === access.userId));
   const { data = [], isLoading, error } = useQuery({ queryKey: ["leads"], queryFn: () => fetchLeads(), refetchOnMount: "always" });
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Lead | null>(null);
@@ -75,7 +79,7 @@ function FunnelPage() {
                 {leads.map((lead) => <article key={lead.id} className="funnel-card">
                   <Button variant="ghost" className="funnel-card-title" onClick={() => setSelected(lead)} aria-label={`Ver respostas de ${lead.name}`}><strong>{lead.name}</strong>{lead.company && <span>{lead.company}</span>}</Button>
                   <a className="funnel-phone" href={leadWhatsApp(lead.phone)} target="_blank" rel="noopener noreferrer">{lead.phone}</a>
-                  <Select value={leadStage(lead.funnel_stage)} disabled={saving} onValueChange={(s) => change(lead, leadStage(s))}>
+                  <Select value={leadStage(lead.funnel_stage)} disabled={saving || !canEdit(lead)} onValueChange={(s) => change(lead, leadStage(s))}>
                     <SelectTrigger aria-label={`Etapa de ${lead.name}`}><SelectValue /></SelectTrigger>
                     <SelectContent>{FUNNEL_STAGES.map((s) => <SelectItem key={s} value={s}>{STAGE_LABEL[s]}</SelectItem>)}</SelectContent>
                   </Select>
@@ -84,7 +88,7 @@ function FunnelPage() {
                   {stage === "perdido" && lead.loss_reason && <p className="funnel-note">{lead.loss_reason}</p>}
                   <div className="funnel-actions">
                     <Button variant="ghost" size="sm" asChild><a href={leadWhatsApp(lead.phone)} target="_blank" rel="noopener noreferrer"><MessageCircle size={15} /> WhatsApp</a></Button>
-                    {(stage === "fechado" || stage === "perdido") && <Button variant="ghost" size="icon" disabled={saving} title="Editar dados" aria-label={`Editar dados de ${lead.name}`} onClick={() => change(lead, stage)}><Pencil size={15} /></Button>}
+                    {(stage === "fechado" || stage === "perdido") && <Button variant="ghost" size="icon" disabled={saving || !canEdit(lead)} title="Editar dados" aria-label={`Editar dados de ${lead.name}`} onClick={() => change(lead, stage)}><Pencil size={15} /></Button>}
                   </div>
                 </article>)}
               </div>

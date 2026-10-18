@@ -1,4 +1,7 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
+## Visibilidade compartilhada do CRM
+- [x] Corrigir leitura central e acesso às seções para todos os cargos autorizados, sem ampliar escrita nem expor pagamentos.
+- [x] Testar histórico compartilhado, indicadores e proteção de edição e dados financeiros: 68 testes e navegação real nas nove áreas como vendedor, SDR e administrador.
 ## Cargos e Gestão de Tráfego
 - [x] Atualizar cargos e proteger acessos por responsabilidade, preservando administrador principal.
 - [x] Adicionar gestores, campanhas, resultados e atividades ligados aos clientes existentes.

@@ -99,8 +99,8 @@ function ContratosPage() {
           {([
             ["Contratos ativos", stats.ativos],
             ["Receita recorrente mensal", currency(stats.mrr)],
-            ["Mensalidades pendentes", stats.pendentes],
-            ["Vencimentos em 7 dias", stats.proximos],
+            ["Mensalidades pendentes", data?.isAdmin ? stats.pendentes : "—"],
+            ["Vencimentos em 7 dias", data?.isAdmin ? stats.proximos : "—"],
           ] as const).map(([label, value]) => (
             <div key={label} className="admin-card admin-stat">
               <span>{label}</span>
@@ -346,7 +346,7 @@ function ContractDetails({ contract, onClose, data, installments, onChanged }: {
               }))}>Salvar alterações</Button>
             )}
 
-            {isRecurring(contract) && (
+            {isAdmin && isRecurring(contract) && (
               <div className="client-extra">
                 <div className="contract-installments-head">
                   <strong>Mensalidades</strong>

@@ -11,8 +11,8 @@
 
 ## Application architecture
 - Traffic management links existing lead IDs through assignments, campaigns and non-overlapping campaign periods; reuse CRM activities with authenticated authors to avoid a parallel logging system.
-- Staff roles remain in user_roles, with legacy collaborator treated as seller; enforce scoped row access and payment administration in database policies, and atomic role changes through a checked RPC.
-- Diagnosis submissions are stored by the public server function in `src/lib/leads.functions.ts` (validated, deduplicated, service-role insert) and read only by an admin-role server function; the browser never queries leads directly, so credentials and lead data stay server-side.
+- Staff roles remain in user_roles, with legacy collaborator treated as seller; separate shared staff consultation from scoped writes and administrator-only payments in database policies, and atomic role changes through a checked RPC.
+- Diagnosis submissions are stored by the public server function in `src/lib/leads.functions.ts` (validated, deduplicated, service-role insert) and read through an authenticated staff-consultation server function; the browser never queries leads directly, so credentials and lead data stay server-side.
 - Admin-only screens live under `src/routes/_authenticated/`; the admin role comes from `public.user_roles` + `has_role`, never from client state.
 - Keep the agency experience at the index route and compose domain sections from `src/components/agency`; this separates interactive experiences from route metadata.
 - Keep portfolio references in a browser-safe static module with local filter/reveal state; this avoids backend requests and keeps reference data independently testable.
@@ -29,5 +29,5 @@
 - Commercial routes share one paginated authenticated Query dataset; sales/payment writes enforce ownership and immutable receipt history through database triggers, with atomic idempotent initial registration.
 - CRM activities are appended atomically by source-table triggers; browser roles cannot write events and receipt state changes only through a principal-admin checked RPC, preventing forged authors and duplicate success logs.
 - The shared AdminHeader owns desktop/sidebar and mobile drawer navigation plus the notification bell; /admin opens the administrator dashboard or a role-authorized client/traffic area, and forms live at /admin/formularios, preserving page bodies and calculations.
-- Staff capabilities are enforced by database policies and authenticated server functions, with shared navigation/access presentation; this prevents hidden-menu bypass and keeps legacy seller accounts usable.
+- Shared CRM reads use crm_can_consult; existing crm_can_read_lead and traffic_access remain ownership-based write guards, and payments/installments stay admin-only. Navigation exposes consultation without granting mutation capabilities.
 - Manual traffic campaigns and non-overlapping result periods attach to assigned existing leads; authenticated operation logs and shared ratio calculations avoid external integrations and duplicate clients.

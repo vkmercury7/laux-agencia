@@ -6,6 +6,7 @@ import { CalendarDays, Eye, MessageCircle, Pencil, Plus, Search, XCircle } from 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AdminHeader } from "@/components/agency/admin-nav";
+import { getMyAccess } from "@/lib/team.functions";
 import { listLeads } from "@/lib/leads.functions";
 import {
   listAgendamentos, listResponsaveis, saveAgendamento, setAgendamentoStatus, STATUS,
@@ -70,6 +71,10 @@ function AgendamentosPage() {
   const fetchLeads = useServerFn(listLeads);
   const save = useServerFn(saveAgendamento);
   const setStatus = useServerFn(setAgendamentoStatus);
+  const fetchAccess = useServerFn(getMyAccess);
+  const { data: access } = useQuery({ queryKey: ["my-access"], queryFn: () => fetchAccess() });
+  const canCreate = Boolean(access?.isAdmin || access?.roles.some(r => ["seller", "collaborator", "sdr"].includes(r)));
+  const canEdit = (a: Ag) => Boolean(access?.isAdmin || (canCreate && leads?.some(l => l.id === a.lead_id && l.assigned_to === access?.userId)));
 
   const { data, isLoading, error } = useQuery({ queryKey: ["agendamentos"], queryFn: () => fetchAg() });
   const { data: resp } = useQuery({ queryKey: ["responsaveis"], queryFn: () => fetchResp() });
@@ -165,7 +170,7 @@ function AgendamentosPage() {
     <main className="admin-shell">
       <div className="admin-container">
         <AdminHeader title={<><CalendarDays size={22} className="inline text-primary" /> Agendamentos</>} subtitle="Reuniões comerciais da equipe (horário de Brasília).">
-          <Button variant="premium" onClick={openNew}><Plus /> Novo agendamento</Button>
+          <Button variant="premium" disabled={!canCreate} onClick={openNew}><Plus /> Novo agendamento</Button>
         </AdminHeader>
 
         <div className="admin-stats">
@@ -211,9 +216,9 @@ function AgendamentosPage() {
                       <td data-label="Status"><span className={`ag-badge ag-${a.status}`}>{STATUS_LABEL[a.status]}</span></td>
                       <td className="ag-actions">
                         <Button variant="ghost" size="sm" onClick={() => setDetail(a)} aria-label="Ver detalhes"><Eye size={15} /></Button>
-                        <Button variant="ghost" size="sm" onClick={() => openEdit(a)} aria-label="Editar ou remarcar"><Pencil size={15} /></Button>
+                        <Button variant="ghost" size="sm" disabled={!canEdit(a)} onClick={() => openEdit(a)} aria-label="Editar ou remarcar"><Pencil size={15} /></Button>
                         <Button variant="ghost" size="sm" asChild><a href={waLink(a)} target="_blank" rel="noopener noreferrer" aria-label="Abrir WhatsApp"><MessageCircle size={15} /></a></Button>
-                        {a.status !== "cancelada" && <Button variant="ghost" size="sm" onClick={() => changeStatus(a, "cancelada")} aria-label="Cancelar"><XCircle size={15} /></Button>}
+                        {a.status !== "cancelada" && <Button variant="ghost" size="sm" disabled={!canEdit(a)} onClick={() => changeStatus(a, "cancelada")} aria-label="Cancelar"><XCircle size={15} /></Button>}
                       </td>
                     </tr>
                   ))}
@@ -285,7 +290,7 @@ function AgendamentosPage() {
                   <div key={l as string}><dt>{l}</dt><dd>{v || "—"}</dd></div>
                 ))}
                 <div><dt>Status</dt><dd>
-                  <select className="ag-input" value={detail.status} onChange={(e) => changeStatus(detail, e.target.value as Status)} aria-label="Alterar status">
+                  <select className="ag-input" value={detail.status} disabled={!canEdit(detail)} onChange={(e) => changeStatus(detail, e.target.value as Status)} aria-label="Alterar status">
                     {STATUS.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
                   </select>
                 </dd></div>
@@ -296,7 +301,7 @@ function AgendamentosPage() {
                 ))}</dd></div>}
               </dl>
               <div className="ag-buttons">
-                <Button variant="ghost" onClick={() => openEdit(detail)}><Pencil /> Editar reunião</Button>
+                <Button variant="ghost" disabled={!canEdit(detail)} onClick={() => openEdit(detail)}><Pencil /> Editar reunião</Button>
                 {detail.lead_id && <Button variant="ghost" onClick={() => setLeadView(detail.lead_id)}><Eye /> Ver diagnóstico</Button>}
                 <Button variant="premium" asChild><a href={waLink(detail)} target="_blank" rel="noopener noreferrer"><MessageCircle /> Conversar no WhatsApp</a></Button>
               </div>

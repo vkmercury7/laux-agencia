@@ -36,7 +36,8 @@ async function responsavelEmail(ctx: Ctx, id: string) {
 export const listResponsaveis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireTeam(context);
+    const { data: allowed } = await context.supabase.rpc("crm_can_consult");
+    if (!allowed) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: roles } = await supabaseAdmin.from("user_roles").select("user_id");
     const ids = [...new Set((roles ?? []).map((r) => r.user_id))];
@@ -53,14 +54,17 @@ export const listResponsaveis = createServerFn({ method: "POST" })
 export const listAgendamentos = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireTeam(context);
-    const { data, error } = await context.supabase
-      .from("agendamentos")
-      .select("*")
-      .order("data_hora_inicio", { ascending: true })
-      .limit(2000);
-    if (error) throw new Error("Não foi possível carregar os agendamentos.");
-    return data as unknown as Array<{
+    const { data: allowed, error: accessError } = await context.supabase.rpc("crm_can_consult");
+    if (accessError || !allowed) throw new Error("Forbidden");
+    const rows = [];
+    for (let offset = 0; ; offset += 500) {
+      const { data, error } = await context.supabase.from("agendamentos").select("*")
+        .order("data_hora_inicio", { ascending: true }).order("id").range(offset, offset + 499);
+      if (error) throw new Error("Não foi possível carregar os agendamentos.");
+      rows.push(...(data ?? []));
+      if ((data ?? []).length < 500) break;
+    }
+    return rows as unknown as Array<{
       id: string; lead_id: string | null; nome_cliente: string; empresa: string | null; whatsapp: string;
       segmento: string | null; servico: string | null; data_hora_inicio: string; duracao_minutos: number;
       responsavel_id: string; responsavel_email: string; modalidade: string; link_reuniao: string | null;

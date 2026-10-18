@@ -92,6 +92,13 @@
       "when": 1792331690309,
       "tag": "0012_staff_role_atomic_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792337210490,
+      "tag": "0013_crm_shared_consultation",
+      "breakpoints": true
     }
   ]
 }
