@@ -55,3 +55,4 @@
 - [x] Estilos exclusivos das duas seções removidos; demais seções, cabeçalho, rodapé e diagnóstico intactos.
 - [x] Testes: desktop e celular sem vazio, sem quebra e sem rolagem lateral.
 - [x] Removida a vitrine interativa de sites ("Imagine sua empresa com um site profissional") com seus três modelos, prévia, controles e imagens; o Portfólio permanece como seção de referências.
+- [x] FAQ movido para depois do formulário de diagnóstico, imediatamente antes do rodapé, sem recriar a seção; âncoras do menu e do rodapé testadas.
