@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Check, ChevronDown, Search, Target, Globe, BarChart3, Layers, ScanLine, Sparkles, ShieldCheck, MessageCircle, Smartphone, Monitor, MousePointer2, Utensils, HeartPulse, Armchair, CircleCheck, CircleX, Zap } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, Search, Target, Globe, BarChart3, Layers, ScanLine, Sparkles, ShieldCheck, MessageCircle, Smartphone, MousePointer2, CircleCheck, CircleX, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ContactButton, DiagnosticButton } from "./contact";
 import { Brand, PerformanceChart } from "./dashboard";
 import { agencyConfig } from "@/lib/agency-config";
 import { trackEvent } from "@/lib/analytics";
-import restaurant from "@/assets/restaurant.jpg";
-import clinic from "@/assets/clinic.jpg";
-import store from "@/assets/store.jpg";
 
 export function Problem() {
   const [strategy, setStrategy] = useState(true);
@@ -29,19 +26,7 @@ export function Solutions() {
 }
 function TrendingLabel() { return <><ArrowUpRight size={13}/>Dados que orientam decisões</>; }
 
-const demos = [
-  { label: "Restaurante", icon: Utensils, brand: "OLIVA", subtitle: "COZINHA CONTEMPORÂNEA", title: "À mesa, os melhores encontros.", text: "Sabores autênticos. Momentos que ficam.", cta: "Reserve sua mesa", image: restaurant, theme: "restaurant" },
-  { label: "Clínica", icon: HeartPulse, brand: "VITA", subtitle: "SAÚDE & BEM-ESTAR", title: "Cuidar de você é a nossa essência.", text: "Acolhimento e cuidado em cada detalhe.", cta: "Agende uma consulta", image: clinic, theme: "clinic" },
-  { label: "Loja", icon: Armchair, brand: "FORMA", subtitle: "DESIGN PARA VIVER", title: "Design que transforma o seu espaço.", text: "Peças com personalidade para sua casa.", cta: "Explore a coleção", image: store, theme: "store" },
-];
 
-export function WebsiteDemo() {
-  const [selected, setSelected] = useState(0);
-  const [device, setDevice] = useState("desktop");
-  const demo = demos[selected] ?? demos[0];
-  if (!demo) return null;
-  return <section id="sites" className="section website-section"><div className="container"><div className="section-heading centered"><span className="eyebrow">VITRINE INTERATIVA DE SITES</span><h2>Imagine sua empresa com um<br/><em>site profissional.</em></h2><p>Três modelos demonstrativos. Toque em um modelo e veja a prévia no desktop ou no celular.</p></div><div className="demo-controls"><div className="segmented">{demos.map((item,i) => <Button key={item.label} aria-pressed={selected === i} variant={selected === i ? "secondary" : "ghost"} onClick={() => setSelected(i)}><item.icon/>{item.label}</Button>)}</div><div className="device-controls"><Button variant={device === "desktop" ? "secondary" : "ghost"} size="icon" title="Visualizar no desktop" aria-label="Visualizar no desktop" onClick={() => setDevice("desktop")}><Monitor/></Button><Button variant={device === "phone" ? "secondary" : "ghost"} size="icon" title="Visualizar no celular" aria-label="Visualizar no celular" onClick={() => setDevice("phone")}><Smartphone/></Button></div></div><div className={`device-stage ${device === "phone" ? "phone-view" : ""}`}><div className={`website-browser demo-${demo.theme}`} key={demo.theme}><div className="browser-bar"><span className="browser-dots"><i/><i/><i/></span><span><ShieldCheck size={10}/>exemplo.suaempresa.com.br</span><ArrowUpRight size={13}/></div><div className="example-nav"><span className="example-brand">{demo.brand}<small>{demo.subtitle}</small></span><span>Sobre nós<span>Experiência</span>Contato</span></div><div className="example-cover"><img key={demo.image} src={demo.image} width={1280} height={768} loading="lazy" alt={`Exemplo conceitual de site para ${demo.label.toLowerCase()}`}/><div className="example-cover-copy"><span>{demo.subtitle}</span><h3>{demo.title}</h3><p>{demo.text}</p><span className="example-cta">{demo.cta}<ArrowUpRight size={14}/></span></div></div><div className="example-footer">Uma experiência pensada para você.<span>Conheça nossa história →</span></div></div><div className="responsive-badge"><Smartphone size={20}/><span>Pensado para todas as telas.<small>Seu negócio sempre bem apresentado.</small></span><Check size={15}/></div></div><p className="demo-disclaimer">EXEMPLOS CONCEITUAIS · NÃO REPRESENTAM CLIENTES REAIS</p><p className="demo-note">O design será adaptado à identidade da sua empresa, dentro do escopo contratado.</p><div className="section-cta"><DiagnosticButton size="lg" source="vitrine-sites">Quero um site para minha empresa</DiagnosticButton></div></div></section>;
-}
 
 export function Process() {
   const steps = [{title:"Uma boa conversa",text:"Você conhece as condições, alinhamos suas necessidades e formalizamos a contratação.",icon:MessageCircle},{title:"Sua empresa online",text:"Coletamos os materiais e criamos o site profissional dentro do escopo contratado.",icon:Globe},{title:"Estratégia em ação",text:"Planejamos e configuramos as campanhas na plataforma escolhida.",icon:Target},{title:"Evolução contínua",text:"Acompanhamos os indicadores e realizamos otimizações periódicas.",icon:BarChart3}];
