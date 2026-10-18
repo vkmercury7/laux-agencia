@@ -10,10 +10,10 @@ import { salesQuery } from '@/lib/sales-query';
 import { registerSale,editSale,savePayment,cancelSale } from '@/lib/sales.functions';
 import { currency } from '@/lib/sales';
 export const Route = createFileRoute('/_authenticated/admin_/vendas')({
- validateSearch:(s:Record<string,unknown>)=>({q:typeof s.q==='string'?s.q:''}),
+ validateSearch:(s:Record<string,unknown>)=>({q:typeof s['q']==='string'?s['q']:''}),
  loader:async({context})=>{await context.queryClient.ensureQueryData(salesQuery);},
  head:()=>({meta:[{title:'Vendas | LAUX AGÊNCIA'},{name:'description',content:'Registro privado de contratos e pagamentos da LAUX AGÊNCIA.'},{property:'og:title',content:'Vendas | LAUX AGÊNCIA'},{property:'og:description',content:'Vendas vinculadas aos clientes do CRM LAUX.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'},{name:'robots',content:'noindex, nofollow'}]}),
- errorComponent:({error})=><p role="alert" className="admin-empty">{error.message}</p>,notFoundComponent:()=> <p>Vendas não encontradas.</p>,component:SalesPage,
+ errorComponent:({error})=><p role="alert" className="admin-empty">{error instanceof Error?error.message:'Não foi possível carregar.'}</p>,notFoundComponent:()=> <p>Vendas não encontradas.</p>,component:SalesPage,
 });
 function SalesPage(){
  const {data}=useSuspenseQuery(salesQuery);const qc=useQueryClient();const register=useServerFn(registerSale);const edit=useServerFn(editSale);const payment=useServerFn(savePayment);const cancel=useServerFn(cancelSale);
