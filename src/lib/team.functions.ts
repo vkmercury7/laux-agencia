@@ -2,11 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { assignableRoleSchema } from './team-roles';
 
 type Ctx = { supabase: any; userId: string };
 
 async function requireSuper(ctx: Ctx) {
-  const { data, error } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" });
+  const { data, error } = await ctx.supabase.rpc("crm_is_admin");
   if (error || !data) throw new Error("Acesso restrito ao administrador principal.");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
@@ -27,7 +28,9 @@ export const getMyAccess = createServerFn({ method: "POST" })
       context.supabase.rpc("has_role", { _user_id: context.userId, _role: "super_admin" }),
     ]);
     const { data: isAdmin } = await context.supabase.rpc("crm_is_admin");
-    return { canViewLeads: Boolean(canViewLeads), isSuper: Boolean(isSuper), isAdmin: Boolean(isAdmin), userId: context.userId };
+    const { data: rows, error } = await context.supabase.from('user_roles').select('role').eq('user_id',context.userId);
+    if(error)throw new Error('Não foi possível verificar o acesso.');
+    return { canViewLeads: Boolean(canViewLeads), isSuper: Boolean(isSuper), isAdmin: Boolean(isAdmin), userId: context.userId, roles:(rows??[]).map(r=>r.role) };
   });
 
 export const listTeam = createServerFn({ method: "POST" })
@@ -51,7 +54,7 @@ export const listTeam = createServerFn({ method: "POST" })
     }));
   });
 
-const roleSchema = z.enum(["admin", "collaborator"]);
+const roleSchema = assignableRoleSchema;
 
 export const inviteMember = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -91,7 +94,7 @@ export const revokeMember = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const admin = await requireSuper(context);
     const m = await getMember(admin, data.id, context.userId);
-    if (m.user_id) await admin.from("user_roles").delete().eq("user_id", m.user_id).in("role", ["admin", "collaborator"]);
+    if (m.user_id) await admin.from("user_roles").delete().eq("user_id", m.user_id).neq("role", "super_admin");
     await admin.from("team_members").update({ status: "revoked", updated_at: new Date().toISOString() }).eq("id", m.id);
     await audit(admin, context.userId, m.status === "pending" ? "revoke_invite" : "remove_member", m.email);
     return { ok: true };
@@ -104,10 +107,8 @@ export const changeRole = createServerFn({ method: "POST" })
     const admin = await requireSuper(context);
     const m = await getMember(admin, data.id, context.userId);
     if (m.status === "revoked") throw new Error("Membro revogado. Envie um novo convite.");
-    await admin.from("user_roles").delete().eq("user_id", m.user_id).in("role", ["admin", "collaborator"]);
-    await admin.from("user_roles").insert({ user_id: m.user_id, role: data.role });
-    await admin.from("team_members").update({ role: data.role, updated_at: new Date().toISOString() }).eq("id", m.id);
-    await audit(admin, context.userId, "change_role", m.email, { from: m.role, to: data.role });
+    const {error}=await context.supabase.rpc('crm_change_team_role',{member_id:m.id,new_role:data.role});
+    if(error)throw new Error('Não foi possível alterar o cargo.');
     return { ok: true };
   });
 

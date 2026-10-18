@@ -10,6 +10,8 @@
 <!-- LOVABLE:END -->
 
 ## Application architecture
+- Traffic management links existing lead IDs through assignments, campaigns and non-overlapping campaign periods; reuse CRM activities with authenticated authors to avoid a parallel logging system.
+- Staff roles remain in user_roles, with legacy collaborator treated as seller; enforce scoped row access and payment administration in database policies, and atomic role changes through a checked RPC.
 - Diagnosis submissions are stored by the public server function in `src/lib/leads.functions.ts` (validated, deduplicated, service-role insert) and read only by an admin-role server function; the browser never queries leads directly, so credentials and lead data stay server-side.
 - Admin-only screens live under `src/routes/_authenticated/`; the admin role comes from `public.user_roles` + `has_role`, never from client state.
 - Keep the agency experience at the index route and compose domain sections from `src/components/agency`; this separates interactive experiences from route metadata.
