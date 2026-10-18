@@ -87,3 +87,38 @@ export const updateLeadFunnel = createServerFn({ method: "POST" })
     if (error || !lead) throw new Error("Não foi possível salvar a etapa. Tente novamente.");
     return lead;
   });
+
+/** Admin-only: assigns (or clears) the team member responsible for a lead. */
+export const assignLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid(), assignedTo: z.string().uuid().nullable() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("crm_is_admin");
+    if (roleError || !isAdmin) throw new Error("Somente administradores podem atribuir responsáveis.");
+    const { data: lead, error } = await context.supabase.from("leads")
+      .update({ assigned_to: data.assignedTo }).eq("id", data.id).select("*").single();
+    if (error || !lead) throw new Error("Não foi possível salvar o responsável. Tente novamente.");
+    return lead;
+  });
+
+const followupSchema = z.object({
+  id: z.string().uuid(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+  time: z.string().regex(/^\d{2}:\d{2}$/).nullable(),
+  note: z.string().trim().max(300),
+  done: z.boolean(),
+});
+
+/** Team: saves the follow-up of a lead (ownership enforced in the database). */
+export const saveFollowup = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => followupSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: allowed, error: roleError } = await context.supabase.rpc("can_view_leads", { _user_id: context.userId });
+    if (roleError || !allowed) throw new Error("Acesso não autorizado.");
+    const { data: lead, error } = await context.supabase.from("leads")
+      .update({ followup_date: data.date, followup_time: data.time, followup_note: data.note, followup_done: data.done })
+      .eq("id", data.id).select("*").single();
+    if (error || !lead) throw new Error("Não foi possível salvar o retorno. Tente novamente.");
+    return lead;
+  });

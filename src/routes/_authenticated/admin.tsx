@@ -4,9 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowUpDown, Eye, Inbox, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LeadDetails } from "@/components/agency/lead-details";
+import { LeadDetails, followupState } from "@/components/agency/lead-details";
 import { AdminHeader } from "@/components/agency/admin-nav";
 import { listLeads } from "@/lib/leads.functions";
+import { listResponsaveis } from "@/lib/agendamentos.functions";
+import { getMyAccess } from "@/lib/team.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -29,21 +31,30 @@ const dateTime = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyl
 
 function AdminPage() {
   const fetchLeads = useServerFn(listLeads);
+  const fetchResponsaveis = useServerFn(listResponsaveis);
+  const fetchAccess = useServerFn(getMyAccess);
   const [search, setSearch] = useState("");
   const [desc, setDesc] = useState(true);
+  const [filter, setFilter] = useState<"todos" | "meus" | "retornos">("todos");
   const [selected, setSelected] = useState<Lead | null>(null);
 
   const { data, isLoading, error } = useQuery({ queryKey: ["leads"], queryFn: () => fetchLeads() });
+  const { data: responsaveis } = useQuery({ queryKey: ["responsaveis"], queryFn: () => fetchResponsaveis(), staleTime: 60_000 });
+  const { data: access } = useQuery({ queryKey: ["my-access"], queryFn: () => fetchAccess(), staleTime: 60_000 });
+  const emailOf = useMemo(() => new Map((responsaveis ?? []).map((r) => [r.id, r.email])), [responsaveis]);
 
   const leads = useMemo(() => {
     const term = search.trim().toLowerCase();
-    const rows = (data ?? []).filter(
-      (l) => !term || l.name.toLowerCase().includes(term) || l.company.toLowerCase().includes(term),
-    );
+    const rows = (data ?? []).filter((l) => {
+      if (term && !l.name.toLowerCase().includes(term) && !l.company.toLowerCase().includes(term)) return false;
+      if (filter === "meus" && l.assigned_to !== access?.userId) return false;
+      if (filter === "retornos" && !(l.followup_date && !l.followup_done)) return false;
+      return true;
+    });
     return [...rows].sort((a, b) =>
       desc ? b.created_at.localeCompare(a.created_at) : a.created_at.localeCompare(b.created_at),
     );
-  }, [data, search, desc]);
+  }, [data, search, desc, filter, access]);
 
   const stats = useMemo(() => {
     const rows = data ?? [];
@@ -91,6 +102,11 @@ function AdminPage() {
                 aria-label="Buscar por nome ou empresa"
               />
             </label>
+            <div className="admin-filters" role="group" aria-label="Filtrar formulários">
+              {([["todos", "Todos"], ["meus", "Meus leads"], ["retornos", "Retornos pendentes"]] as const).map(([key, label]) => (
+                <Button key={key} variant={filter === key ? "secondary" : "ghost"} size="sm" aria-pressed={filter === key} onClick={() => setFilter(key)}>{label}</Button>
+              ))}
+            </div>
             <Button variant="ghost" onClick={() => setDesc((v) => !v)}>
               <ArrowUpDown size={16} /> {desc ? "Mais recentes" : "Mais antigos"}
             </Button>
@@ -117,17 +133,23 @@ function AdminPage() {
                     <th>Empresa</th>
                     <th>WhatsApp</th>
                     <th>Segmento</th>
+                    <th>Responsável</th>
+                    <th>Retorno</th>
                     <th>Enviado em</th>
                     <th />
                   </tr>
                 </thead>
                 <tbody>
-                  {leads.map((lead) => (
+                  {leads.map((lead) => {
+                    const state = followupState(lead);
+                    return (
                     <tr key={lead.id}>
                       <td>{lead.name}</td>
                       <td>{lead.company}</td>
                       <td>{lead.phone}</td>
                       <td>{lead.segment}</td>
+                      <td>{lead.assigned_to ? emailOf.get(lead.assigned_to) ?? "—" : <span className="lead-unassigned">Sem responsável</span>}</td>
+                      <td>{state && <span className={`followup-badge followup-${state}`}>{state === "atrasado" ? "Retorno atrasado" : state === "hoje" ? "Retorno hoje" : "Retorno futuro"}</span>}</td>
                       <td>{dateTime.format(new Date(lead.created_at))}</td>
                       <td>
                         <Button variant="ghost" size="sm" onClick={() => setSelected(lead)}>
@@ -135,7 +157,8 @@ function AdminPage() {
                         </Button>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

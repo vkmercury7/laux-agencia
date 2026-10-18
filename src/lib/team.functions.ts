@@ -26,7 +26,8 @@ export const getMyAccess = createServerFn({ method: "POST" })
       context.supabase.rpc("can_view_leads", { _user_id: context.userId }),
       context.supabase.rpc("has_role", { _user_id: context.userId, _role: "super_admin" }),
     ]);
-    return { canViewLeads: Boolean(canViewLeads), isSuper: Boolean(isSuper) };
+    const { data: isAdmin } = await context.supabase.rpc("crm_is_admin");
+    return { canViewLeads: Boolean(canViewLeads), isSuper: Boolean(isSuper), isAdmin: Boolean(isAdmin), userId: context.userId };
   });
 
 export const listTeam = createServerFn({ method: "POST" })

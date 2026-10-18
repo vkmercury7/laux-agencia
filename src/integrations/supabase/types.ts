@@ -97,12 +97,17 @@ export type Database = {
       leads: {
         Row: {
           advertises: string
+          assigned_to: string | null
           budget: string
           closing_notes: string | null
           company: string
           consent: boolean
           contract_value: number | null
           created_at: string
+          followup_date: string | null
+          followup_done: boolean
+          followup_note: string | null
+          followup_time: string | null
           funnel_stage: string
           goals: string[]
           has_site: string
@@ -116,12 +121,17 @@ export type Database = {
         }
         Insert: {
           advertises: string
+          assigned_to?: string | null
           budget: string
           closing_notes?: string | null
           company: string
           consent?: boolean
           contract_value?: number | null
           created_at?: string
+          followup_date?: string | null
+          followup_done?: boolean
+          followup_note?: string | null
+          followup_time?: string | null
           funnel_stage?: string
           goals?: string[]
           has_site: string
@@ -135,12 +145,17 @@ export type Database = {
         }
         Update: {
           advertises?: string
+          assigned_to?: string | null
           budget?: string
           closing_notes?: string | null
           company?: string
           consent?: boolean
           contract_value?: number | null
           created_at?: string
+          followup_date?: string | null
+          followup_done?: boolean
+          followup_note?: string | null
+          followup_time?: string | null
           funnel_stage?: string
           goals?: string[]
           has_site?: string

@@ -444,3 +444,21 @@ h1 { font-size:49px; font-weight:800; line-height:1.17; letter-spacing:0; }.hero
   .admin-nav-sep { display:none; }
   .admin-nav-exit { flex:0 0 auto; }
 }
+
+/* Lead assignment + follow-up */
+.admin-filters { display:flex; gap:4px; flex-wrap:wrap; }
+.lead-unassigned { color:var(--muted-foreground); font-size:.85em; }
+.followup-badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:.75rem; font-weight:600; white-space:nowrap; }
+.followup-atrasado { background:color-mix(in oklch, var(--destructive) 12%, transparent); color:var(--destructive); }
+.followup-hoje { background:color-mix(in oklch, var(--primary) 12%, transparent); color:var(--primary); }
+.followup-futuro { background:var(--muted); color:var(--muted-foreground); }
+.lead-team { display:grid; gap:14px; margin:16px 0; padding-top:14px; border-top:1px solid var(--border); }
+.lead-field { display:grid; gap:5px; font-size:.82rem; font-weight:600; color:var(--foreground); }
+.lead-field input, .lead-field select { padding:9px 11px; border:1px solid var(--border); border-radius:10px; background:var(--background); color:var(--foreground); font:inherit; font-weight:400; }
+.lead-field select:disabled { opacity:.65; }
+.lead-followup { display:grid; gap:10px; margin:0; padding:12px; border:1px solid var(--border); border-radius:12px; }
+.lead-followup legend { display:flex; align-items:center; gap:6px; padding:0 6px; font-size:.82rem; font-weight:600; }
+.lead-followup-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.lead-followup-done { display:flex; align-items:center; gap:8px; font-size:.85rem; }
+.lead-followup > button { justify-self:start; }
+@media (max-width:560px) { .lead-followup-grid { grid-template-columns:1fr; } }
