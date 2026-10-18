@@ -53,8 +53,9 @@ export function nextDueDate(c: Pick<ContractRow, "monthly_value" | "due_day" | "
 /** Competências mensais (primeiro dia do mês) de starts_on até until, inclusive. */
 export function installmentMonths(starts_on: string, until: string): string[] {
   const months: string[] = [];
-  let [y, m] = starts_on.split("-").map(Number);
-  const [ey, em] = until.split("-").map(Number);
+  const [sy = 0, sm = 1] = starts_on.split("-").map(Number);
+  const [ey = 0, em = 1] = until.split("-").map(Number);
+  let y = sy, m = sm;
   while (y < ey || (y === ey && m <= em)) {
     months.push(`${y}-${String(m).padStart(2, "0")}-01`);
     if (m === 12) { y += 1; m = 1; } else { m += 1; }
