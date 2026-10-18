@@ -58,9 +58,6 @@ export function Differentials() {
   return <section className="section"><div className="container"><div className="section-heading centered"><span className="eyebrow">O QUE FAZ A DIFERENÇA</span><h2>Mais que anúncios.<br/>Uma <em>estrutura digital</em> para sua empresa.</h2></div><div className="differentials-grid">{items.map(item=><article key={item.title}><item.icon size={25}/><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></div></section>;
 }
 
-export function Ecosystem() {
-  return <section className="section ecosystem-section"><div className="container ecosystem-layout"><div><span className="eyebrow">PARTE DE ALGO MAIOR</span><h2>Um ecossistema.<br/><em>Mais possibilidades.</em></h2><p className="section-copy">Marketing e inteligência artificial conectados para ampliar as possibilidades da sua empresa.</p><p className="fine-print">As soluções da LAUX AI são complementares e contratadas separadamente.</p><Button asChild variant="outline" size="lg"><a href="https://lauxai-pixel-perfect.lovable.app/" target="_blank" rel="noopener noreferrer">Conhecer a LAUX AI<ArrowUpRight/></a></Button></div><div className="ecosystem-brands"><div><Brand/><p>Sites · Tráfego pago<br/>Presença digital · Performance</p></div><span className="ecosystem-connection"><Sparkles size={22}/></span><div className="ai-brand"><span className="ai-word">LAUX <em>AI</em></span><p>Agentes inteligentes<br/>Automação · Processos</p></div></div></div></section>;
-}
 
 const faqs = [
   ["O que está incluído nos R$ 490 do primeiro mês?", "R$ 390 correspondem à primeira mensalidade de gestão de tráfego pago e R$ 100 à criação inicial do site. O investimento em anúncios é pago separadamente. O escopo do site é definido na proposta."],
@@ -82,6 +79,3 @@ export function FAQ() {
   return <section id="faq" className="section"><div className="container faq-layout"><div><span className="eyebrow">TUDO ÀS CLARAS</span><h2>Boas perguntas.<br/><em>Respostas claras.</em></h2><p className="section-copy">O que você precisa saber antes de dar o próximo passo.</p><ContactButton variant="outline">Ainda tenho uma dúvida</ContactButton></div><div className="faq-list">{faqs.map(([question,answer],i)=><article className={opened === i ? "faq-item open" : "faq-item"} key={question}><Button variant="ghost" className="faq-question" aria-expanded={opened === i} aria-controls={`faq-answer-${i}`} onClick={()=>setOpened(opened===i ? null : i)}>{question}<ChevronDown size={18}/></Button><div id={`faq-answer-${i}`} className="faq-answer" hidden={opened!==i}><p>{answer}</p></div></article>)}</div></div></section>;
 }
 
-export function FinalContact() {
-  return <><section className="final-cta"><div className="container"><span className="eyebrow">O PRÓXIMO PASSO É SEU</span><h2>Seu próximo cliente pode estar<br/>procurando sua empresa <span>agora.</span></h2><p>Prepare sua presença digital e comece a anunciar com uma estratégia profissional.</p><DiagnosticButton variant="inverse" size="lg" source="cta-final">Quero crescer minha empresa</DiagnosticButton><span className="final-watermark" aria-hidden="true">LAUX↗</span></div></section></>;
-}
