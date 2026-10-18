@@ -21,7 +21,7 @@ export function followupState(lead: Lead): "atrasado" | "hoje" | "futuro" | null
   return "futuro";
 }
 
-export function LeadDetails({ lead, onClose }: { lead: Lead | null; onClose: () => void }) {
+export function LeadDetails({ lead, onClose, extra }: { lead: Lead | null; onClose: () => void; extra?: ReactNode }) {
   const queryClient = useQueryClient();
   const assign = useServerFn(assignLead);
   const save = useServerFn(saveFollowup);
@@ -117,6 +117,7 @@ export function LeadDetails({ lead, onClose }: { lead: Lead | null; onClose: () 
           {error && <p role="alert" className="text-destructive">{error}</p>}
         </div>
 
+        {extra}
         <Button variant="premium" asChild><a href={leadWhatsApp(lead.phone)} target="_blank" rel="noopener noreferrer"><MessageCircle /> Conversar no WhatsApp</a></Button>
       </>}
     </DialogContent>
