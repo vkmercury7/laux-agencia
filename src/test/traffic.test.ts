@@ -13,7 +13,6 @@ describe('Manual traffic calculations',()=>{
 describe('Staff areas',()=>{
  it('supports exactly the five assignable roles',()=>expect(assignableRoleSchema.options).toEqual(['admin','seller','sdr','attendant','traffic_manager']));
  it('preserves principal full access',()=>expect(allowedArea('/admin/equipe',['super_admin'])).toBe(true));
- it('SDR has no financial or team areas',()=>{expect(allowedArea('/admin/vendas',['sdr'])).toBe(false);expect(allowedArea('/admin/contratos',['sdr'])).toBe(false);expect(allowedArea('/admin/equipe',['sdr'])).toBe(false);});
- it('seller can open sales but not global finance',()=>{expect(allowedArea('/admin/vendas',['seller'])).toBe(true);expect(allowedArea('/admin/dashboard',['seller'])).toBe(false);});
- it('traffic manager cannot open sales or clients directory',()=>{expect(allowedArea('/admin/gestao-trafego',['traffic_manager'])).toBe(true);expect(allowedArea('/admin/clientes',['traffic_manager'])).toBe(false);expect(allowedArea('/admin/vendas',['traffic_manager'])).toBe(false);});
+ it.each(['seller','collaborator','sdr','attendant','traffic_manager'])('%s can consult all nine CRM areas but cannot manage team',role=>{for(const path of ['/admin/dashboard','/admin/atividades','/admin/clientes','/admin/formularios','/admin/agendamentos','/admin/funil','/admin/vendas','/admin/contratos','/admin/gestao-trafego'])expect(allowedArea(path,[role])).toBe(true);expect(allowedArea('/admin/equipe',[role])).toBe(false);});
+ it('accounts without an authorized role cannot consult CRM',()=>expect(allowedArea('/admin/clientes',[])).toBe(false));
 });

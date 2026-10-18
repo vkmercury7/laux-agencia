@@ -21,7 +21,7 @@ describe.skipIf(!url||!key)('Sales database rules',()=>{
   const {error:loginError}=await userDb.auth.signInWithPassword({email,password});if(loginError)throw new Error('Temporary seller sign-in failed');
   const id=crypto.randomUUID();temporarySales.push(id);const row={id,lead_id:leadId,seller_id:uid,service:'Test seller',closed_on:'2026-10-17',initial_value:100,contract_type:'unico',starts_on:'2026-10-17'};
   expect((await userDb.from('sales').insert(row)).error).toBeNull();
-  expect((await userDb.from('sales').select('id').eq('id',saleId)).data).toEqual([]);
+  expect((await userDb.from('sales').select('id').eq('id',saleId)).data).toEqual([{id:saleId}]);
   expect((await userDb.from('sales').update({seller_id:sellerId}).eq('id',id)).error).not.toBeNull();
   expect((await userDb.from('sales').update({status:'cancelada'}).eq('id',id)).error).not.toBeNull();
   expect((await userDb.from('sale_payments').insert({sale_id:id,amount:50,status:'pago',received_on:'2026-10-17'})).error).not.toBeNull();
