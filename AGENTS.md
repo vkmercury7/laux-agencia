@@ -29,3 +29,5 @@
 - Commercial routes share one paginated authenticated Query dataset; sales/payment writes enforce ownership and immutable receipt history through database triggers, with atomic idempotent initial registration.
 - CRM activities are appended atomically by source-table triggers; browser roles cannot write events and receipt state changes only through a principal-admin checked RPC, preventing forged authors and duplicate success logs.
 - The shared AdminHeader owns desktop/sidebar and mobile drawer navigation plus the notification bell; /admin opens the administrator dashboard or a role-authorized client/traffic area, and forms live at /admin/formularios, preserving page bodies and calculations.
+- Staff capabilities are enforced by database policies and authenticated server functions, with shared navigation/access presentation; this prevents hidden-menu bypass and keeps legacy seller accounts usable.
+- Manual traffic campaigns and non-overlapping result periods attach to assigned existing leads; authenticated operation logs and shared ratio calculations avoid external integrations and duplicate clients.

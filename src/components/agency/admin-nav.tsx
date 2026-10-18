@@ -24,7 +24,7 @@ const NAV = [
 
 export function AdminBrand() {
   return (
-    <Link to="/admin/dashboard" search={{ period: 'month', from: '', to: '', seller: '' }} className="brand admin-brand" aria-label="LAUX AGÊNCIA — painel">
+    <Link to="/admin" className="brand admin-brand" aria-label="LAUX AGÊNCIA — painel">
       <span className="brand-symbol" aria-hidden="true"><i /><i /><i /></span>
       <span className="brand-word">LAUX<span className="brand-sub">AGÊNCIA</span></span>
     </Link>
