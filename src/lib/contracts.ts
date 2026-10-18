@@ -42,7 +42,7 @@ export const isOverdue = (i: Pick<InstallmentRow, "status" | "due_date">, today:
 /** Próximo vencimento de um contrato recorrente ativo, a partir de hoje. */
 export function nextDueDate(c: Pick<ContractRow, "monthly_value" | "due_day" | "status">, today: string): string | null {
   if (c.status !== "ativo" || !isRecurring(c) || !c.due_day) return null;
-  const [y, m] = today.split("-").map(Number);
+  const [y = 0, m = 1] = today.split("-").map(Number);
   const day = String(c.due_day).padStart(2, "0");
   const thisMonth = `${y}-${String(m).padStart(2, "0")}-${day}`;
   if (thisMonth >= today) return thisMonth;
