@@ -48,3 +48,9 @@
 - [x] Diagnóstico grava a resposta antes de abrir o WhatsApp, com antiduplicidade por telefone/hora.
 - [x] Login privado em /admin com indicadores, busca, ordenação, modal de respostas e botão WhatsApp.
 - [x] Testes: envio, gravação, login, bloqueio de não autorizados, celular.
+
+## Limpeza da landing page
+- [x] Removida a seção vermelha de chamada para ação ("Seu próximo cliente pode estar procurando sua empresa agora").
+- [x] Removida a seção do ecossistema LAUX AI ("Um ecossistema. Mais possibilidades").
+- [x] Estilos exclusivos das duas seções removidos; demais seções, cabeçalho, rodapé e diagnóstico intactos.
+- [x] Testes: desktop e celular sem vazio, sem quebra e sem rolagem lateral.
