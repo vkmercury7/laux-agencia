@@ -10,7 +10,7 @@ import { listLeads } from "@/lib/leads.functions";
 import { listResponsaveis } from "@/lib/agendamentos.functions";
 import { getMyAccess } from "@/lib/team.functions";
 
-export const Route = createFileRoute("/_authenticated/admin")({
+export const Route = createFileRoute("/_authenticated/admin_/formularios")({
   head: () => ({
     meta: [
       { title: "Painel de formulários | LAUX AGÊNCIA" },
