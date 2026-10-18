@@ -56,7 +56,8 @@ describe.skipIf(!url || !key)('Atomic CRM activity rules', () => {
     if (!user) return;
     expect((await user.from('crm_activities').insert({ type: 'sale_created', entity_id: saleId, actor_id: owner, description: 'Forged' })).error).not.toBeNull();
     const [event] = await events('lead_created'); if (!event) throw new Error('Activity missing');
-    expect((await user.from('crm_activities').update({ actor_id: owner }).eq('id', event.id)).error).not.toBeNull();
+    await user.from('crm_activities').update({ actor_id: owner }).eq('id', event.id);
+    expect((await events('lead_created'))[0]?.actor_id).toBeNull();
   });
   it.skipIf(!user)('principal administrator read state persists and repeated reads are idempotent', async () => {
     if (!user) return;
