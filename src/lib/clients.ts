@@ -43,9 +43,20 @@ export type ClientSale = {
  * Situação comercial de um contato, derivada da etapa do funil e das vendas reais.
  * Nunca inventa vigência: venda fechada sem informação de contrato vira "Contrato não informado".
  */
-export function clientSituation(stage: string | null | undefined, sales: ClientSale[], today: string): ClientSituation {
+export type ClientContract = { status: string; monthly_value: number | null; starts_on: string };
+
+export function clientSituation(stage: string | null | undefined, sales: ClientSale[], today: string, contracts: ClientContract[] = []): ClientSituation {
   const funnel = leadStage(stage);
   if (funnel === "perdido") return "perdido";
+
+  // Contratos cadastrados mandam na classificação: ativo recorrente → ativo;
+  // todos cancelados → inativo; sem contrato → mantém a classificação comercial.
+  if (contracts.length > 0) {
+    const ativo = contracts.some((c) => c.status === "ativo" && (c.monthly_value ?? 0) > 0 && c.starts_on <= today);
+    if (ativo) return "cliente_ativo";
+    if (contracts.every((c) => c.status === "cancelado")) return "cliente_inativo";
+    return "contrato_nao_informado";
+  }
 
   const validas = sales.filter((s) => s.status === "valida");
   const ativa = validas.some(

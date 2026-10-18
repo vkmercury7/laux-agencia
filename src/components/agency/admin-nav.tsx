@@ -2,13 +2,14 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import type { ReactNode } from "react";
-import { CalendarDays, Columns3, Inbox, LogOut, Users, ChartNoAxesCombined, ShoppingBag, ContactRound } from "lucide-react";
+import { CalendarDays, Columns3, Inbox, LogOut, Users, ChartNoAxesCombined, ShoppingBag, ContactRound, FileText } from "lucide-react";
 import { getMyAccess } from "@/lib/team.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 const NAV = [
   { to: "/admin/dashboard", label: "Dashboard", icon: ChartNoAxesCombined, exact: false },
   { to: "/admin/vendas", label: "Vendas", icon: ShoppingBag, exact: false },
+  { to: "/admin/contratos", label: "Contratos", icon: FileText, exact: false },
   { to: "/admin", label: "Formulários", icon: Inbox, exact: true },
   { to: "/admin/clientes", label: "Clientes", icon: ContactRound, exact: false },
   { to: "/admin/agendamentos", label: "Agendamentos", icon: CalendarDays, exact: false },
