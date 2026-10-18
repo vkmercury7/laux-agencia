@@ -631,6 +631,7 @@ export type Database = {
     }
     Functions: {
       can_view_leads: { Args: { _user_id: string }; Returns: boolean }
+      crm_can_consult: { Args: never; Returns: boolean }
       crm_can_read_lead: { Args: { lid: string }; Returns: boolean }
       crm_can_sell: { Args: { uid: string }; Returns: boolean }
       crm_change_team_role: {
