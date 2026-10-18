@@ -1,8 +1,9 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState, type ReactNode } from "react";
-import { CalendarDays, Columns3, Inbox, LogOut, Users, ChartNoAxesCombined, ShoppingBag, ContactRound, FileText, Activity, Menu } from "lucide-react";
+import { CalendarDays, Columns3, Inbox, LogOut, Users, ChartNoAxesCombined, ShoppingBag, ContactRound, FileText, Activity, Menu, Megaphone } from "lucide-react";
+import { allowedArea } from '@/lib/team-roles';
 import { getMyAccess } from "@/lib/team.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 import { Notifications } from "./notifications";
 
 const NAV = [
+  { to: '/admin/gestao-trafego', label: 'Gestão de Tráfego', icon: Megaphone, group: 'COMERCIAL' },
   { to: "/admin/dashboard", label: "Dashboard", icon: ChartNoAxesCombined, group: "VISÃO GERAL" },
   { to: "/admin/atividades", label: "Atividades", icon: Activity, group: "VISÃO GERAL" },
   { to: "/admin/clientes", label: "Clientes", icon: ContactRound, group: "COMERCIAL" },
@@ -54,7 +56,7 @@ export function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
     <nav className="admin-nav" aria-label="Navegação do painel">
       {["VISÃO GERAL", "COMERCIAL"].map(group => <div className="admin-nav-group" key={group}>
         <h2>{group}</h2>
-        {NAV.filter(item => item.group === group).map(({ to, label, icon: Icon }) => (
+        {NAV.filter(item => item.group === group && allowedArea(item.to,access?.roles??[])).map(({ to, label, icon: Icon }) => (
         <Button asChild variant="ghost" key={to} className="admin-nav-btn"><Link
           key={to}
           to={to}
@@ -68,7 +70,7 @@ export function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
         </Link></Button>
       ))}</div>)}
       <div className="admin-nav-group admin-nav-administration"><h2>ADMINISTRAÇÃO</h2>
-      {access?.isSuper && (
+      {access?.isAdmin && (
         <Button asChild variant="ghost" className="admin-nav-btn"><Link
           to="/admin/equipe"
           className="admin-nav-btn"
@@ -101,4 +103,13 @@ export function AdminHeader({ title, subtitle, children }: { title: ReactNode; s
     </header>
     </>
   );
+}
+
+export function AdminAccessBoundary({children}:{children:ReactNode}) {
+ const path=useRouterState({select:s=>s.location.pathname});
+ const fetchAccess=useServerFn(getMyAccess);
+ const {data,isLoading}=useQuery({queryKey:['access'],queryFn:()=>fetchAccess()});
+ if(isLoading)return <main className="admin-shell"><p className="admin-empty">Carregando...</p></main>;
+ if(!allowedArea(path,data?.roles??[]))return <main className="admin-shell"><div className="admin-container"><AdminHeader title="Acesso restrito"/><p className="admin-empty" role="alert">Seu cargo não permite acessar esta seção.</p></div></main>;
+ return children;
 }

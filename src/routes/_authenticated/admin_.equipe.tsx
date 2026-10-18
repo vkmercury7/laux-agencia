@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { AdminHeader } from "@/components/agency/admin-nav";
 import { changeRole, getMyAccess, inviteMember, listTeam, resendInvite, revokeMember } from "@/lib/team.functions";
+import { ROLE_LABELS, assignableRoleSchema, type TeamRole } from '@/lib/team-roles';
 
 export const Route = createFileRoute("/_authenticated/admin_/equipe")({
   head: () => ({
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/admin_/equipe")({
   component: TeamPage,
 });
 
-const roleLabel: Record<string, string> = { admin: "Administrador", collaborator: "Colaborador", super_admin: "Administrador principal" };
+const roleLabel = ROLE_LABELS;
 const statusLabel: Record<string, string> = { pending: "Pendente", active: "Ativo", revoked: "Revogado" };
 const date = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" });
 
@@ -31,14 +32,14 @@ function TeamPage() {
   const qc = useQueryClient();
   const access = useQuery({ queryKey: ["access"], queryFn: useServerFn(getMyAccess) });
   const fetchTeam = useServerFn(listTeam);
-  const team = useQuery({ queryKey: ["team"], queryFn: () => fetchTeam(), enabled: Boolean(access.data?.isSuper) });
+  const team = useQuery({ queryKey: ["team"], queryFn: () => fetchTeam(), enabled: Boolean(access.data?.isAdmin) });
   const invite = useServerFn(inviteMember);
   const revoke = useServerFn(revokeMember);
   const setRole = useServerFn(changeRole);
   const resend = useServerFn(resendInvite);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [role, setRoleSel] = useState<"admin" | "collaborator">("collaborator");
+  const [role, setRoleSel] = useState<TeamRole>('seller');
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   const run = useMutation({
@@ -61,10 +62,10 @@ function TeamPage() {
   }
 
   if (access.isLoading) return <main className="admin-shell"><p className="admin-empty">Carregando...</p></main>;
-  if (!access.data?.isSuper)
+  if (!access.data?.isAdmin)
     return (
       <main className="admin-shell"><div className="admin-container">
-        <p role="alert" className="admin-empty">Acesso restrito ao administrador principal.</p>
+        <p role="alert" className="admin-empty">Acesso restrito aos administradores.</p>
         <Button variant="ghost" asChild><Link to="/admin"><ArrowLeft /> Voltar ao painel</Link></Button>
       </div></main>
     );
@@ -72,7 +73,7 @@ function TeamPage() {
   return (
     <main className="admin-shell">
       <div className="admin-container">
-        <AdminHeader title="Equipe" subtitle="Convide pessoas e controle quem acessa os formulários.">
+        <AdminHeader title="Equipe" subtitle="Cargos e acessos da equipe.">
           <Button variant="premium" onClick={() => { setMsg(null); setOpen(true); }}><UserPlus /> Convidar membro</Button>
         </AdminHeader>
 
@@ -91,11 +92,11 @@ function TeamPage() {
                     <tr key={m.id}>
                       <td>{m.email}</td>
                       <td>
-                        {m.status === "revoked" ? roleLabel[m.role] : (
+                        {m.status === "revoked" || m.role === 'super_admin' ? roleLabel[m.role] : (
                           <select aria-label={`Função de ${m.email}`} value={m.role} disabled={run.isPending}
-                            onChange={(e) => run.mutate(() => setRole({ data: { id: m.id, role: e.target.value as "admin" | "collaborator" } }))}>
-                            <option value="admin">Administrador</option>
-                            <option value="collaborator">Colaborador</option>
+                            onChange={(e) => run.mutate(() => setRole({ data: { id: m.id, role: assignableRoleSchema.parse(e.target.value) } }))}>
+                            {m.role==='collaborator'&&<option value="collaborator">Vendedor (acesso existente)</option>}
+                            {assignableRoleSchema.options.map(r=><option key={r} value={r}>{roleLabel[r]}</option>)}
                           </select>
                         )}
                       </td>
@@ -108,7 +109,7 @@ function TeamPage() {
                             <Send size={14} /> Reenviar
                           </Button>
                         )}
-                        {m.status !== "revoked" && (
+                        {m.status !== "revoked" && m.role !== 'super_admin' && (
                           <Button variant="ghost" size="sm" disabled={run.isPending}
                             onClick={() => confirm(`Remover o acesso de ${m.email}?`) && run.mutate(() => revoke({ data: { id: m.id } }))}>
                             {m.status === "pending" ? "Revogar convite" : "Remover"}
@@ -132,9 +133,8 @@ function TeamPage() {
             <label className="admin-search">
               <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email@empresa.com" aria-label="E-mail do colaborador" />
             </label>
-            <select aria-label="Tipo de acesso" value={role} onChange={(e) => setRoleSel(e.target.value as "admin" | "collaborator")}>
-              <option value="collaborator">Colaborador — vê formulários e usa o WhatsApp</option>
-              <option value="admin">Administrador — vê todos os leads, sem gerenciar equipe</option>
+            <select aria-label="Tipo de acesso" value={role} onChange={(e) => setRoleSel(assignableRoleSchema.parse(e.target.value))}>
+              {assignableRoleSchema.options.map(r=><option key={r} value={r}>{roleLabel[r]}</option>)}
             </select>
             {msg && !msg.ok && <p role="alert" className="text-destructive">{msg.text}</p>}
             <Button variant="premium" type="submit" disabled={run.isPending}>{run.isPending ? "Enviando..." : "Enviar convite"}</Button>
