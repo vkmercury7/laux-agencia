@@ -13,7 +13,7 @@ import { clientSituation, SITUATION_FILTERS, SITUATION_LABEL, type ClientSituati
 import { STAGE_LABEL, leadStage } from "@/lib/funnel";
 import { currency } from "@/lib/sales";
 
-export const Route = createFileRoute("/_authenticated/admin/clientes")({
+export const Route = createFileRoute("/_authenticated/admin_/clientes")({
   head: () => ({
     meta: [
       { title: "Clientes | LAUX AGÊNCIA" },

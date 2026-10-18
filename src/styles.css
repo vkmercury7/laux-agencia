@@ -462,3 +462,13 @@ h1 { font-size:49px; font-weight:800; line-height:1.17; letter-spacing:0; }.hero
 .lead-followup-done { display:flex; align-items:center; gap:8px; font-size:.85rem; }
 .lead-followup > button { justify-self:start; }
 @media (max-width:560px) { .lead-followup-grid { grid-template-columns:1fr; } }
+
+/* Clientes (CRM) */
+.client-badge{display:inline-flex;align-items:center;padding:.2rem .6rem;border-radius:999px;font-size:.78rem;font-weight:600;background:var(--muted);color:var(--foreground);white-space:nowrap}
+.client-cliente_ativo{background:oklch(0.92 0.05 150);color:oklch(0.35 0.1 150)}
+.client-cliente_inativo,.client-perdido{background:oklch(0.95 0.03 25);color:var(--primary)}
+.client-proposta_enviada{background:oklch(0.93 0.04 80);color:oklch(0.4 0.1 70)}
+.client-contrato_nao_informado{background:oklch(0.94 0.02 260);color:oklch(0.45 0.05 260)}
+.client-extra{display:grid;gap:.75rem;padding:.9rem 1rem;border:1px solid var(--border);border-radius:var(--radius);font-size:.9rem}
+.client-extra ul{margin:.35rem 0 0;padding-left:1.1rem;display:grid;gap:.2rem}
+.client-extra-empty{margin:.3rem 0 0;color:var(--muted-foreground)}
