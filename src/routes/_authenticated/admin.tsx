@@ -102,6 +102,11 @@ function AdminPage() {
                 aria-label="Buscar por nome ou empresa"
               />
             </label>
+            <div className="admin-filters" role="group" aria-label="Filtrar formulários">
+              {([["todos", "Todos"], ["meus", "Meus leads"], ["retornos", "Retornos pendentes"]] as const).map(([key, label]) => (
+                <Button key={key} variant={filter === key ? "secondary" : "ghost"} size="sm" aria-pressed={filter === key} onClick={() => setFilter(key)}>{label}</Button>
+              ))}
+            </div>
             <Button variant="ghost" onClick={() => setDesc((v) => !v)}>
               <ArrowUpDown size={16} /> {desc ? "Mais recentes" : "Mais antigos"}
             </Button>
@@ -128,17 +133,23 @@ function AdminPage() {
                     <th>Empresa</th>
                     <th>WhatsApp</th>
                     <th>Segmento</th>
+                    <th>Responsável</th>
+                    <th>Retorno</th>
                     <th>Enviado em</th>
                     <th />
                   </tr>
                 </thead>
                 <tbody>
-                  {leads.map((lead) => (
+                  {leads.map((lead) => {
+                    const state = followupState(lead);
+                    return (
                     <tr key={lead.id}>
                       <td>{lead.name}</td>
                       <td>{lead.company}</td>
                       <td>{lead.phone}</td>
                       <td>{lead.segment}</td>
+                      <td>{lead.assigned_to ? emailOf.get(lead.assigned_to) ?? "—" : <span className="lead-unassigned">Sem responsável</span>}</td>
+                      <td>{state && <span className={`followup-badge followup-${state}`}>{state === "atrasado" ? "Retorno atrasado" : state === "hoje" ? "Retorno hoje" : "Retorno futuro"}</span>}</td>
                       <td>{dateTime.format(new Date(lead.created_at))}</td>
                       <td>
                         <Button variant="ghost" size="sm" onClick={() => setSelected(lead)}>
