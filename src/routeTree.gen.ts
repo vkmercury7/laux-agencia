@@ -15,7 +15,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermosRouteImport } from './routes/termos'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin_.agendamentos'
+import { Route as AuthenticatedAdminAtividadesRouteImport } from './routes/_authenticated/admin_.atividades'
 import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authenticated/admin_.clientes'
 import { Route as AuthenticatedAdminContratosRouteImport } from './routes/_authenticated/admin_.contratos'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin_.dashboard'
@@ -53,10 +55,21 @@ const TermosRoute = TermosRouteImport.update({
   path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminAgendamentosRoute =
   AuthenticatedAdminAgendamentosRouteImport.update({
     id: '/admin_/agendamentos',
     path: '/admin/agendamentos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminAtividadesRoute =
+  AuthenticatedAdminAtividadesRouteImport.update({
+    id: '/admin_/atividades',
+    path: '/admin/atividades',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAdminClientesRoute =
@@ -107,7 +120,9 @@ export interface FileRoutesByFullPath {
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/atividades': typeof AuthenticatedAdminAtividadesRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/contratos': typeof AuthenticatedAdminContratosRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
@@ -122,7 +137,9 @@ export interface FileRoutesByTo {
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/atividades': typeof AuthenticatedAdminAtividadesRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/contratos': typeof AuthenticatedAdminContratosRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
@@ -139,7 +156,9 @@ export interface FileRoutesById {
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/admin_/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/_authenticated/admin_/atividades': typeof AuthenticatedAdminAtividadesRoute
   '/_authenticated/admin_/clientes': typeof AuthenticatedAdminClientesRoute
   '/_authenticated/admin_/contratos': typeof AuthenticatedAdminContratosRoute
   '/_authenticated/admin_/dashboard': typeof AuthenticatedAdminDashboardRoute
@@ -156,7 +175,9 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/reset-password'
     | '/termos'
+    | '/admin'
     | '/admin/agendamentos'
+    | '/admin/atividades'
     | '/admin/clientes'
     | '/admin/contratos'
     | '/admin/dashboard'
@@ -171,7 +192,9 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/reset-password'
     | '/termos'
+    | '/admin'
     | '/admin/agendamentos'
+    | '/admin/atividades'
     | '/admin/clientes'
     | '/admin/contratos'
     | '/admin/dashboard'
@@ -187,7 +210,9 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/reset-password'
     | '/termos'
+    | '/_authenticated/admin'
     | '/_authenticated/admin_/agendamentos'
+    | '/_authenticated/admin_/atividades'
     | '/_authenticated/admin_/clientes'
     | '/_authenticated/admin_/contratos'
     | '/_authenticated/admin_/dashboard'
@@ -250,11 +275,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin_/agendamentos': {
       id: '/_authenticated/admin_/agendamentos'
       path: '/admin/agendamentos'
       fullPath: '/admin/agendamentos'
       preLoaderRoute: typeof AuthenticatedAdminAgendamentosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin_/atividades': {
+      id: '/_authenticated/admin_/atividades'
+      path: '/admin/atividades'
+      fullPath: '/admin/atividades'
+      preLoaderRoute: typeof AuthenticatedAdminAtividadesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin_/clientes': {
@@ -310,7 +349,9 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAdminAgendamentosRoute: typeof AuthenticatedAdminAgendamentosRoute
+  AuthenticatedAdminAtividadesRoute: typeof AuthenticatedAdminAtividadesRoute
   AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRoute
   AuthenticatedAdminContratosRoute: typeof AuthenticatedAdminContratosRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
@@ -321,7 +362,9 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAdminAgendamentosRoute: AuthenticatedAdminAgendamentosRoute,
+  AuthenticatedAdminAtividadesRoute: AuthenticatedAdminAtividadesRoute,
   AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRoute,
   AuthenticatedAdminContratosRoute: AuthenticatedAdminContratosRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
