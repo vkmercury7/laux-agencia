@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUpRight, Check, Menu, X, Target, Globe, ChartNoAxesComb
 import { Button } from "@/components/ui/button";
 import { Brand, Dashboard } from "@/components/agency/dashboard";
 import { ContactButton, ContactProvider, DiagnosticButton } from "@/components/agency/contact";
-import { Problem, Solutions, WebsiteDemo, Process, Pricing, Differentials, FAQ, FinalContact } from "@/components/agency/sections";
+import { Problem, Solutions, WebsiteDemo, Process, Pricing, Differentials, FAQ } from "@/components/agency/sections";
 import { Diagnostic } from "@/components/agency/diagnostic";
 import { Portfolio } from "@/components/agency/portfolio";
 import { Simulator } from "@/components/agency/simulator";
