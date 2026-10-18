@@ -31,7 +31,7 @@ function AuthPage() {
 
   useEffect(() => {
     void supabase.auth.getUser().then(({ data }) => {
-      if (data.user) void navigate({ to: "/admin/dashboard", search: { period: 'month', from: '', to: '', seller: '' }, replace: true });
+      if (data.user) void navigate({ to: "/admin", replace: true });
     });
   }, [navigate]);
 
@@ -45,7 +45,7 @@ function AuthPage() {
       setError("E-mail ou senha incorretos.");
       return;
     }
-    void navigate({ to: "/admin/dashboard", search: { period: 'month', from: '', to: '', seller: '' }, replace: true });
+    void navigate({ to: "/admin", replace: true });
   }
 
   async function forgot() {

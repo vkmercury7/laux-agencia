@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -12,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AdminAccessBoundary } from '@/components/agency/admin-nav';
 
 function NotFoundComponent() {
   return (
@@ -120,11 +122,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const path=useRouterState({select:s=>s.location.pathname});
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      {path.startsWith('/admin/')?<AdminAccessBoundary><Outlet /></AdminAccessBoundary>:<Outlet />}
     </QueryClientProvider>
   );
 }
