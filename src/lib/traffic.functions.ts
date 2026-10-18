@@ -3,16 +3,19 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { z } from 'zod';
 import { campaignSchema,resultSchema } from './traffic';
 export const getTrafficData=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
- const {data:allowed,error:accessError}=await context.supabase.rpc('crm_has_any_role',{uid:context.userId,roles:['super_admin','admin','traffic_manager']});
+ const {data:allowed,error:accessError}=await context.supabase.rpc('crm_can_consult');
  if(accessError||!allowed)throw new Error('Acesso restrito à gestão de tráfego.');
  const {data:admin}=await context.supabase.rpc('crm_is_admin');
+ const {data:editableClients,error:writeError}=await context.supabase.from('traffic_clients').select('lead_id').eq('manager_id',context.userId);
+ const {data:manager}=await context.supabase.rpc('crm_has_any_role',{uid:context.userId,roles:['traffic_manager']});
+ if(writeError)throw new Error('Não foi possível verificar as atribuições.');
  const [clients,campaigns,results,activities]=await Promise.all([
  context.supabase.rpc('traffic_client_info'), context.supabase.from('traffic_campaigns').select('*').order('updated_at',{ascending:false}), context.supabase.from('traffic_results').select('*').order('starts_on',{ascending:false}), context.supabase.from('crm_activities').select('*').eq('type','traffic_operation').order('created_at',{ascending:false}).limit(200),
  ]);
  if(clients.error||campaigns.error||results.error||activities.error)throw new Error('Não foi possível carregar a gestão de tráfego.');
  const managers:{id:string;email:string}[]=[];
  if(admin){const {supabaseAdmin}=await import('@/integrations/supabase/client.server'); const {data:roles,error}=await supabaseAdmin.from('user_roles').select('user_id').in('role',['traffic_manager','admin','super_admin']); if(error)throw new Error('Não foi possível carregar gestores.'); for(const id of new Set((roles??[]).map(r=>r.user_id))){const {data}=await supabaseAdmin.auth.admin.getUserById(id);if(data.user?.email)managers.push({id,email:data.user.email});}}
- return {clients:clients.data??[],campaigns:campaigns.data??[],results:results.data??[],activities:activities.data??[],managers,isAdmin:Boolean(admin)};
+ return {clients:clients.data??[],campaigns:campaigns.data??[],results:results.data??[],activities:activities.data??[],managers,isAdmin:Boolean(admin),editableLeadIds:admin ? (clients.data??[]).map(c=>c.id) : manager ? (editableClients??[]).map(c=>c.lead_id) : []};
 });
 export const assignTrafficManager=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({lead_id:z.string().uuid(),manager_id:z.string().uuid().nullable()}).parse(v)).handler(async({data,context})=>{
  const {data:admin}=await context.supabase.rpc('crm_is_admin');if(!admin)throw new Error('Somente administradores podem atribuir gestores.');

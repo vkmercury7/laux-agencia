@@ -58,22 +58,21 @@ export const submitLead = createServerFn({ method: "POST" })
     return { ok: true as const, duplicate: false as const, id: inserted.id };
   });
 
-/** Admin-only list of stored leads. */
+/** Shared consultation; ownership-based writes remain enforced by RLS. */
 export const listLeads = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: isAdmin, error: roleError } = await context.supabase.rpc("can_view_leads", {
-      _user_id: context.userId,
-    });
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("crm_can_consult");
     if (roleError || !isAdmin) throw new Error("Forbidden");
 
-    const { data, error } = await context.supabase
-      .from("leads")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(1000);
-    if (error) throw new Error("Não foi possível carregar os formulários.");
-    return data;
+    const rows = [];
+    for (let offset = 0; ; offset += 500) {
+      const { data, error } = await context.supabase.from("leads").select("*")
+        .order("created_at", { ascending: false }).order("id").range(offset, offset + 499);
+      if (error) throw new Error("Não foi possível carregar os formulários.");
+      rows.push(...(data ?? []));
+      if ((data ?? []).length < 500) return rows;
+    }
   });
 
 export const updateLeadFunnel = createServerFn({ method: "POST" })

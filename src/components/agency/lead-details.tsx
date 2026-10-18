@@ -94,7 +94,7 @@ export function LeadDetails({ lead, onClose, extra }: { lead: Lead | null; onClo
             </select>
           </label>
 
-          <fieldset className="lead-followup">
+          <fieldset className="lead-followup" disabled={!access?.isAdmin && !(lead.assigned_to === access?.userId && access?.roles.some(r => ["seller", "collaborator", "sdr", "attendant"].includes(r)))}>
             <legend><CalendarClock size={15} /> Próximo retorno</legend>
             <div className="lead-followup-grid">
               <label className="lead-field">Data

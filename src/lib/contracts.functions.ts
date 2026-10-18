@@ -6,7 +6,7 @@ import { todaySP } from "./sales";
 
 async function access(ctx: { supabase: any; userId: string }) {
   const [{ data: allowed, error }, { data: admin, error: roleError }] = await Promise.all([
-    ctx.supabase.rpc("can_view_leads", { _user_id: ctx.userId }),
+    ctx.supabase.rpc("crm_can_consult"),
     ctx.supabase.rpc("crm_is_admin"),
   ]);
   if (error || roleError || !allowed) throw new Error("Acesso não autorizado.");
@@ -23,12 +23,12 @@ async function allRows<T>(fetchPage: (from: number, to: number) => PromiseLike<{
   }
 }
 
-/** Contratos + mensalidades + vendas/leads de apoio. Vendedores veem só os próprios (RLS). */
+/** Shared contracts; payment installments are fetched only for administrators. */
 export const getContractsData = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
   const isAdmin = await access(context);
   const [contracts, installments, sales, leads] = await Promise.all([
     allRows((a, b) => context.supabase.from("contracts").select("*").order("id").range(a, b)),
-    allRows((a, b) => context.supabase.from("contract_installments").select("*").order("id").range(a, b)),
+    isAdmin ? allRows((a, b) => context.supabase.from("contract_installments").select("*").order("id").range(a, b)) : [],
     allRows((a, b) => context.supabase.from("sales").select("id,lead_id,seller_id,seller_email,service,monthly_value,starts_on,status").order("id").range(a, b)),
     allRows((a, b) => context.supabase.from("leads").select("id,name,company").order("id").range(a, b)),
   ]);
