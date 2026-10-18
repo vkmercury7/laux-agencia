@@ -10,7 +10,7 @@ import { getContractsData, saveContract, generateInstallments, updateInstallment
 import { nextDueDate, isOverdue, isRecurring, type ContractRow, type InstallmentRow } from "@/lib/contracts";
 import { currency, parseMoney, todaySP } from "@/lib/sales";
 
-export const Route = createFileRoute("/_authenticated/admin/contratos")({
+export const Route = createFileRoute("/_authenticated/admin_/contratos")({
   head: () => ({
     meta: [
       { title: "Contratos | LAUX AGÊNCIA" },
