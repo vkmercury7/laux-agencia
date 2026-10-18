@@ -71,6 +71,13 @@
       "when": 1792290890519,
       "tag": "0009_crm_contracts",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792329167886,
+      "tag": "0010_crm_activity_notifications",
+      "breakpoints": true
     }
   ]
 }
