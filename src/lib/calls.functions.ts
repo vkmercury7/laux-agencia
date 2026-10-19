@@ -67,7 +67,7 @@ export const getTeamPerformance = createServerFn({ method: "POST" })
     const [members, roles, calls, meetings, sales, traffic] = await Promise.all([
       supabaseAdmin.from("team_members").select("email, user_id, role").neq("status", "revoked"),
       supabaseAdmin.from("user_roles").select("user_id, role"),
-      supabaseAdmin.from("lead_calls").select("user_id, proximo_contato").gte("created_at", from).lte("created_at", to),
+      supabaseAdmin.from("lead_calls").select("user_id, user_email, proximo_contato").gte("created_at", from).lte("created_at", to),
       supabaseAdmin.from("agendamentos").select("responsavel_id").gte("data_hora_inicio", from).lte("data_hora_inicio", to).neq("status", "cancelada"),
       supabaseAdmin.from("sales").select("seller_id, initial_value").gte("closed_on", data.from).lte("closed_on", data.to).eq("status", "valida"),
       supabaseAdmin.from("traffic_clients").select("manager_id"),
@@ -88,6 +88,7 @@ export const getTeamPerformance = createServerFn({ method: "POST" })
     const now = new Date().toISOString();
     for (const c of calls.data ?? []) {
       const row = ensure(c.user_id);
+      if (!row.email && c.user_email) row.email = c.user_email;
       row.calls += 1;
       if (c.proximo_contato && c.proximo_contato >= now) row.pending += 1;
     }
