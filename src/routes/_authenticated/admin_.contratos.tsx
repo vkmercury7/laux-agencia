@@ -6,6 +6,7 @@ import { Eye, FileText, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AdminHeader } from "@/components/agency/admin-nav";
+import { ContractGenerator } from "@/components/agency/contract-generator";
 import { getContractsData, saveContract, generateInstallments, updateInstallment } from "@/lib/contracts.functions";
 import { nextDueDate, isOverdue, isRecurring, type ContractRow, type InstallmentRow } from "@/lib/contracts";
 import { currency, parseMoney, todaySP } from "@/lib/sales";
@@ -387,6 +388,11 @@ function ContractDetails({ contract, onClose, data, installments, onChanged }: {
                 )}
               </div>
             )}
+            {isAdmin && <ContractGenerator key={contract.id} initial={{
+              name: lead?.name ?? "", company: lead?.company ?? "", service: sale?.service ?? "",
+              monthly: isRecurring(contract) ? (contract.monthly_value ?? 0).toFixed(2).replace(".", ",") : "",
+              start: fmtDate(contract.starts_on), due: contract.due_day ? String(contract.due_day) : "",
+            }} />}
             {error && <p role="alert" className="text-destructive">{error}</p>}
           </div>
         )}
