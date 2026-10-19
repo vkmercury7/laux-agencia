@@ -337,8 +337,8 @@ h1 { font-size:49px; font-weight:800; line-height:1.17; letter-spacing:0; }.hero
 .admin-table td { padding:12px; border-bottom:1px solid var(--border); color:var(--foreground); white-space:nowrap; }
 .admin-table tr:hover td { background:var(--secondary); }
 .admin-empty { display:flex; align-items:center; gap:8px; justify-content:center; padding:28px; color:var(--muted-foreground); font-size:14px; }
-.admin-dialog { max-width:520px; display:flex; flex-direction:column; gap:14px; }
-.admin-answers { display:flex; flex-direction:column; gap:10px; max-height:52vh; overflow-y:auto; }
+.admin-dialog { max-width:520px; display:flex; flex-direction:column; gap:14px; max-height:90vh; max-height:90dvh; overflow-y:auto; overscroll-behavior:contain; }
+.admin-answers { display:flex; flex-direction:column; gap:10px; }
 .admin-answers div { display:flex; justify-content:space-between; gap:14px; border-bottom:1px dashed var(--border); padding-bottom:7px; }
 .admin-answers dt { font-size:13px; color:var(--muted-foreground); font-weight:600; }
 .admin-answers dd { font-size:14px; color:var(--foreground); font-weight:600; text-align:right; }
