@@ -87,7 +87,7 @@ export function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
         >
           <Users size={16} /> Equipe
         </Link></Button>
-      )}
+      </>)}
       <Button type="button" variant="ghost" className="admin-nav-btn admin-nav-exit" disabled={exiting} onClick={signOut}>
         <LogOut size={16} /> {exiting ? "Saindo..." : "Sair"}
       </Button>{error && <p role="alert" className="text-destructive text-sm">{error}</p>}</div>
