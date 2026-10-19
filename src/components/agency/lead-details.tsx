@@ -1,7 +1,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CalendarClock, MessageCircle } from "lucide-react";
+import { CalendarClock, MessageCircle, Phone } from "lucide-react";
+import { registerCall, listLeadCalls, CALL_RESULTS } from "@/lib/calls.functions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { assignLead, saveFollowup, type listLeads } from "@/lib/leads.functions";
@@ -36,6 +37,13 @@ export function LeadDetails({ lead, onClose, extra }: { lead: Lead | null; onClo
   const [done, setDone] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const saveCall = useServerFn(registerCall);
+  const fetchCalls = useServerFn(listLeadCalls);
+  const { data: calls } = useQuery({ queryKey: ["lead-calls", lead?.id], queryFn: () => fetchCalls({ data: { leadId: lead!.id } }), enabled: Boolean(lead) });
+  const [callResult, setCallResult] = useState<keyof typeof CALL_RESULTS>("atendeu");
+  const [callNote, setCallNote] = useState("");
+  const [callNext, setCallNext] = useState("");
+  const [callSaving, setCallSaving] = useState(false);
 
   useEffect(() => {
     setDate(lead?.followup_date ?? "");
@@ -43,7 +51,19 @@ export function LeadDetails({ lead, onClose, extra }: { lead: Lead | null; onClo
     setNote(lead?.followup_note ?? "");
     setDone(lead?.followup_done ?? false);
     setError("");
+    setCallResult("atendeu"); setCallNote(""); setCallNext("");
   }, [lead]);
+
+  const onRegisterCall = async () => {
+    if (!lead) return;
+    setCallSaving(true); setError("");
+    try {
+      await saveCall({ data: { leadId: lead.id, resultado: callResult, observacao: callNote, proximoContato: callNext ? new Date(callNext).toISOString() : null } });
+      setCallNote(""); setCallNext("");
+      await queryClient.invalidateQueries({ queryKey: ["lead-calls", lead.id] });
+    } catch { setError("Não foi possível registrar a ligação."); }
+    finally { setCallSaving(false); }
+  };
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["leads"] });
 
@@ -116,6 +136,34 @@ export function LeadDetails({ lead, onClose, extra }: { lead: Lead | null; onClo
           </fieldset>
           {error && <p role="alert" className="text-destructive">{error}</p>}
         </div>
+
+        <section className="lead-followup" aria-label="Ligações">
+          <h3 className="lead-field"><Phone size={15} /> Registrar ligação</h3>
+          <div className="lead-followup-grid">
+            <label className="lead-field">Resultado
+              <select value={callResult} onChange={(e) => setCallResult(e.target.value as keyof typeof CALL_RESULTS)} aria-label="Resultado da ligação">
+                {Object.entries(CALL_RESULTS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+              </select>
+            </label>
+            <label className="lead-field">Próximo contato (opcional)
+              <input type="datetime-local" value={callNext} onChange={(e) => setCallNext(e.target.value)} />
+            </label>
+          </div>
+          <label className="lead-field">Observação
+            <input value={callNote} maxLength={500} onChange={(e) => setCallNote(e.target.value)} placeholder="Ex.: pediu proposta por e-mail" />
+          </label>
+          <Button variant="secondary" size="sm" onClick={onRegisterCall} disabled={callSaving}>
+            {callSaving ? "Registrando..." : "Registrar ligação"}
+          </Button>
+          {(calls ?? []).length > 0 && <ol className="lead-calls-history">
+            {(calls ?? []).map((c) => <li key={c.id}>
+              <strong>{CALL_RESULTS[c.resultado as keyof typeof CALL_RESULTS] ?? c.resultado}</strong>
+              <span> · {dateTime.format(new Date(c.created_at))} · {c.user_email}</span>
+              {c.observacao && <p>{c.observacao}</p>}
+              {c.proximo_contato && <small>Próximo contato: {dateTime.format(new Date(c.proximo_contato))}</small>}
+            </li>)}
+          </ol>}
+        </section>
 
         {extra}
         <Button variant="premium" asChild><a href={leadWhatsApp(lead.phone)} target="_blank" rel="noopener noreferrer"><MessageCircle /> Conversar no WhatsApp</a></Button>
