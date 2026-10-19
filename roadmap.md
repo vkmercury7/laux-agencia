@@ -1,4 +1,8 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
+## Ligações e desempenho da equipe
+- [x] Registro de ligações nos detalhes do cliente (resultado, observação, próximo contato), salvo por usuário autenticado com histórico e atividade automática.
+- [x] Painel /admin/desempenho exclusivo para administradores, com indicadores, filtros e desempenho individual por cargo.
+- [x] Testes: ligação registrada e visível no histórico e no painel; menu e consulta protegidos para não-administradores.
 ## Visibilidade compartilhada do CRM
 - [x] Corrigir leitura central e acesso às seções para todos os cargos autorizados, sem ampliar escrita nem expor pagamentos.
 - [x] Testar histórico compartilhado, indicadores e proteção de edição e dados financeiros: 68 testes e navegação real nas nove áreas como vendedor, SDR e administrador.
