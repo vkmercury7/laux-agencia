@@ -240,6 +240,47 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_calls: {
+        Row: {
+          created_at: string
+          id: string
+          lead_id: string
+          observacao: string
+          proximo_contato: string | null
+          resultado: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lead_id: string
+          observacao?: string
+          proximo_contato?: string | null
+          resultado: string
+          user_email?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lead_id?: string
+          observacao?: string
+          proximo_contato?: string | null
+          resultado?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_calls_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           advertises: string
