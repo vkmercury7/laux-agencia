@@ -31,3 +31,4 @@
 - The shared AdminHeader owns desktop/sidebar and mobile drawer navigation plus the notification bell; /admin opens the administrator dashboard or a role-authorized client/traffic area, and forms live at /admin/formularios, preserving page bodies and calculations.
 - Shared CRM reads use crm_can_consult; existing crm_can_read_lead and traffic_access remain ownership-based write guards, and payments/installments stay admin-only. Navigation exposes consultation without granting mutation capabilities.
 - Manual traffic campaigns and non-overlapping result periods attach to assigned existing leads; authenticated operation logs and shared ratio calculations avoid external integrations and duplicate clients.
+- Call logs live in public.lead_calls (own-user insert via RLS) with a trigger appending call_registered to crm_activities; team performance is computed server-side in getTeamPerformance (admin-only via crm_is_admin + supabaseAdmin), never in the browser.
