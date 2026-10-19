@@ -70,7 +70,15 @@ export function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
         </Link></Button>
       ))}</div>)}
       <div className="admin-nav-group admin-nav-administration"><h2>ADMINISTRAÇÃO</h2>
-      {access?.isAdmin && (
+      {access?.isAdmin && (<>
+        <Button asChild variant="ghost" className="admin-nav-btn"><Link
+          to="/admin/desempenho"
+          className="admin-nav-btn"
+          activeProps={{ className: "admin-nav-btn active" }}
+          onClick={onNavigate}
+        >
+          <ChartNoAxesCombined size={16} /> Desempenho da Equipe
+        </Link></Button>
         <Button asChild variant="ghost" className="admin-nav-btn"><Link
           to="/admin/equipe"
           className="admin-nav-btn"
