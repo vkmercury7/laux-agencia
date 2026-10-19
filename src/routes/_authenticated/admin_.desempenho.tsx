@@ -68,7 +68,7 @@ function PerformancePage() {
       <section className="commercial-section">
         <h2>Desempenho individual</h2>
         {!rows.length && <p className="admin-empty">Sem dados registrados neste período.</p>}
-        {rows.length > 0 && <div className="admin-table-wrap"><table className="admin-table">
+        {rows.length > 0 && <div className="admin-table-scroll"><table className="admin-table">
           <thead><tr><th>Colaborador</th><th>Cargo</th><th>Ligações</th><th>Retornos pendentes</th><th>Reuniões</th><th>Vendas</th><th>Valor vendido</th><th>Clientes de tráfego</th></tr></thead>
           <tbody>{rows.map((r) => {
             const isSeller = ['seller', 'collaborator', 'admin', 'super_admin'].includes(r.role);
