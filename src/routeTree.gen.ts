@@ -21,6 +21,7 @@ import { Route as AuthenticatedAdminAtividadesRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authenticated/admin_.clientes'
 import { Route as AuthenticatedAdminContratosRouteImport } from './routes/_authenticated/admin_.contratos'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin_.dashboard'
+import { Route as AuthenticatedAdminDesempenhoRouteImport } from './routes/_authenticated/admin_.desempenho'
 import { Route as AuthenticatedAdminEquipeRouteImport } from './routes/_authenticated/admin_.equipe'
 import { Route as AuthenticatedAdminFormulariosRouteImport } from './routes/_authenticated/admin_.formularios'
 import { Route as AuthenticatedAdminFunilRouteImport } from './routes/_authenticated/admin_.funil'
@@ -91,6 +92,12 @@ const AuthenticatedAdminDashboardRoute =
     path: '/admin/dashboard',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminDesempenhoRoute =
+  AuthenticatedAdminDesempenhoRouteImport.update({
+    id: '/admin_/desempenho',
+    path: '/admin/desempenho',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminEquipeRoute =
   AuthenticatedAdminEquipeRouteImport.update({
     id: '/admin_/equipe',
@@ -133,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/contratos': typeof AuthenticatedAdminContratosRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/admin/desempenho': typeof AuthenticatedAdminDesempenhoRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
   '/admin/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
@@ -151,6 +159,7 @@ export interface FileRoutesByTo {
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/contratos': typeof AuthenticatedAdminContratosRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/admin/desempenho': typeof AuthenticatedAdminDesempenhoRoute
   '/admin/equipe': typeof AuthenticatedAdminEquipeRoute
   '/admin/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
@@ -171,6 +180,7 @@ export interface FileRoutesById {
   '/_authenticated/admin_/clientes': typeof AuthenticatedAdminClientesRoute
   '/_authenticated/admin_/contratos': typeof AuthenticatedAdminContratosRoute
   '/_authenticated/admin_/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/_authenticated/admin_/desempenho': typeof AuthenticatedAdminDesempenhoRoute
   '/_authenticated/admin_/equipe': typeof AuthenticatedAdminEquipeRoute
   '/_authenticated/admin_/formularios': typeof AuthenticatedAdminFormulariosRoute
   '/_authenticated/admin_/funil': typeof AuthenticatedAdminFunilRoute
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/admin/clientes'
     | '/admin/contratos'
     | '/admin/dashboard'
+    | '/admin/desempenho'
     | '/admin/equipe'
     | '/admin/formularios'
     | '/admin/funil'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/admin/clientes'
     | '/admin/contratos'
     | '/admin/dashboard'
+    | '/admin/desempenho'
     | '/admin/equipe'
     | '/admin/formularios'
     | '/admin/funil'
@@ -228,6 +240,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin_/clientes'
     | '/_authenticated/admin_/contratos'
     | '/_authenticated/admin_/dashboard'
+    | '/_authenticated/admin_/desempenho'
     | '/_authenticated/admin_/equipe'
     | '/_authenticated/admin_/formularios'
     | '/_authenticated/admin_/funil'
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/desempenho': {
+      id: '/_authenticated/admin_/desempenho'
+      path: '/admin/desempenho'
+      fullPath: '/admin/desempenho'
+      preLoaderRoute: typeof AuthenticatedAdminDesempenhoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin_/equipe': {
       id: '/_authenticated/admin_/equipe'
       path: '/admin/equipe'
@@ -375,6 +395,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRoute
   AuthenticatedAdminContratosRoute: typeof AuthenticatedAdminContratosRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
+  AuthenticatedAdminDesempenhoRoute: typeof AuthenticatedAdminDesempenhoRoute
   AuthenticatedAdminEquipeRoute: typeof AuthenticatedAdminEquipeRoute
   AuthenticatedAdminFormulariosRoute: typeof AuthenticatedAdminFormulariosRoute
   AuthenticatedAdminFunilRoute: typeof AuthenticatedAdminFunilRoute
@@ -389,6 +410,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRoute,
   AuthenticatedAdminContratosRoute: AuthenticatedAdminContratosRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
+  AuthenticatedAdminDesempenhoRoute: AuthenticatedAdminDesempenhoRoute,
   AuthenticatedAdminEquipeRoute: AuthenticatedAdminEquipeRoute,
   AuthenticatedAdminFormulariosRoute: AuthenticatedAdminFormulariosRoute,
   AuthenticatedAdminFunilRoute: AuthenticatedAdminFunilRoute,
