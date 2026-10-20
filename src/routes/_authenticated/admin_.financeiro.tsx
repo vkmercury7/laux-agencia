@@ -63,7 +63,7 @@ function statusLabel(status: string): string {
     ativo: 'Ativo',
     encerrado: 'Encerrado',
   };
-  return labels[status] ?? status || '—';
+  return labels[status] ?? (status || '—');
 }
 
 function statusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
@@ -78,10 +78,10 @@ function csvValue(value: unknown): string {
 
 export const Route = createFileRoute('/_authenticated/admin_/financeiro')({
   validateSearch: (search: Record<string, unknown>) => ({
-    period: String(search.period) === 'all' ? 'all' : 'month',
-    q: typeof search.q === 'string' ? search.q : '',
-    status: ['all', 'valida', 'cancelada'].includes(String(search.status))
-      ? String(search.status)
+    period: String(search['period']) === 'all' ? 'all' : 'month',
+    q: typeof search['q'] === 'string' ? search['q'] : '',
+    status: ['all', 'valida', 'cancelada'].includes(String(search['status']))
+      ? String(search['status'])
       : 'all',
   }),
   loader: async ({ context }) => {
@@ -126,65 +126,65 @@ function Financeiro() {
   const payments = rows(data.payments);
   const installments = rows(data.installments);
   const leads = rows(data.leads);
-  const leadMap = new Map(leads.map((lead) => [textValue(lead.id), lead]));
+  const leadMap = new Map(leads.map((lead) => [textValue(lead['id']), lead]));
   const paymentBySale = new Map<string, number>();
 
   for (const payment of payments) {
-    if (textValue(payment.status) !== 'pago') continue;
-    const saleId = textValue(payment.sale_id);
-    paymentBySale.set(saleId, (paymentBySale.get(saleId) ?? 0) + numberValue(payment.amount));
+    if (textValue(payment['status']) !== 'pago') continue;
+    const saleId = textValue(payment['sale_id']);
+    paymentBySale.set(saleId, (paymentBySale.get(saleId) ?? 0) + numberValue(payment['amount']));
   }
 
-  const periodFrom = search.period === 'month' ? monthStart : '';
-  const periodLabel = search.period === 'month' ? 'Este mês' : 'Todo o período';
+  const periodFrom = search['period'] === 'month' ? monthStart : '';
+  const periodLabel = search['period'] === 'month' ? 'Este mês' : 'Todo o período';
   const salesInPeriod = sales.filter((sale) => {
-    const closedOn = textValue(sale.closed_on);
-    const matchesPeriod = search.period === 'all' || isBetween(closedOn, periodFrom, today);
-    const matchesStatus = search.status === 'all' || textValue(sale.status) === search.status;
-    const lead = leadMap.get(textValue(sale.lead_id));
+    const closedOn = textValue(sale['closed_on']);
+    const matchesPeriod = search['period'] === 'all' || isBetween(closedOn, periodFrom, today);
+    const matchesStatus = search['status'] === 'all' || textValue(sale['status']) === search['status'];
+    const lead = leadMap.get(textValue(sale['lead_id']));
     const haystack = [
-      lead?.name,
-      lead?.company,
-      sale.service,
-      sale.seller_email,
-      sale.id,
+      lead?.['name'],
+      lead?.['company'],
+      sale['service'],
+      sale['seller_email'],
+      sale['id'],
     ]
       .map(textValue)
       .join(' ')
       .toLocaleLowerCase('pt-BR');
-    return matchesPeriod && matchesStatus && haystack.includes(search.q.trim().toLocaleLowerCase('pt-BR'));
+    return matchesPeriod && matchesStatus && haystack.includes(search['q'].trim().toLocaleLowerCase('pt-BR'));
   });
 
-  const validSales = salesInPeriod.filter((sale) => textValue(sale.status) === 'valida');
-  const soldValue = validSales.reduce((total, sale) => total + numberValue(sale.initial_value), 0);
+  const validSales = salesInPeriod.filter((sale) => textValue(sale['status']) === 'valida');
+  const soldValue = validSales.reduce((total, sale) => total + numberValue(sale['initial_value']), 0);
   const receivedValue = data.isAdmin
-    ? validSales.reduce((total, sale) => total + (paymentBySale.get(textValue(sale.id)) ?? 0), 0)
+    ? validSales.reduce((total, sale) => total + (paymentBySale.get(textValue(sale['id'])) ?? 0), 0)
     : null;
   const pendingValue = receivedValue === null ? null : Math.max(soldValue - receivedValue, 0);
-  const recurringValue = validSales.reduce((total, sale) => total + numberValue(sale.monthly_value), 0);
+  const recurringValue = validSales.reduce((total, sale) => total + numberValue(sale['monthly_value']), 0);
   const overdueInstallments = installments.filter(
     (installment) =>
-      textValue(installment.status) === 'pendente' &&
-      textValue(installment.due_date).slice(0, 10) < today,
+      textValue(installment['status']) === 'pendente' &&
+      textValue(installment['due_date']).slice(0, 10) < today,
   );
   const nextInstallments = installments
-    .filter((installment) => textValue(installment.status) === 'pendente')
-    .sort((a, b) => textValue(a.due_date).localeCompare(textValue(b.due_date)))
+    .filter((installment) => textValue(installment['status']) === 'pendente')
+    .sort((a, b) => textValue(a['due_date']).localeCompare(textValue(b['due_date'])))
     .slice(0, 5);
 
   function exportCsv() {
     const header = ['Cliente', 'Empresa', 'Serviço', 'Vendedor', 'Data da venda', 'Valor', 'Recebido', 'Status'];
     const body = salesInPeriod.map((sale) => {
-      const lead = leadMap.get(textValue(sale.lead_id));
+      const lead = leadMap.get(textValue(sale['lead_id']));
       return [
-        lead?.name,
-        lead?.company,
-        sale.service,
-        sale.seller_email,
-        sale.closed_on,
-        numberValue(sale.initial_value).toFixed(2),
-        data.isAdmin ? (paymentBySale.get(textValue(sale.id)) ?? 0).toFixed(2) : 'restrito',
-        statusLabel(textValue(sale.status)),
+        lead?.['name'],
+        lead?.['company'],
+        sale['service'],
+        sale['seller_email'],
+        sale['closed_on'],
+        numberValue(sale['initial_value']).toFixed(2),
+        data.isAdmin ? (paymentBySale.get(textValue(sale['id'])) ?? 0).toFixed(2) : 'restrito',
+        statusLabel(textValue(sale['status'])),
       ]
         .map(csvValue)
         .join(';');
@@ -210,7 +210,7 @@ function Financeiro() {
 
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <Button asChild variant="outline">
-            <Link to="/admin/dashboard">
+            <Link to="/admin/dashboard" search={{ period: 'month', from: '', to: '', seller: '' }}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar ao dashboard
             </Link>
@@ -229,7 +229,7 @@ function Financeiro() {
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   className="pl-9"
-                  value={search.q}
+                  value={search['q']}
                   placeholder="Digite para buscar"
                   onChange={(event) => void navigate({ search: { ...search, q: event.target.value } })}
                 />
@@ -239,7 +239,7 @@ function Financeiro() {
               Período
               <select
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                value={search.period}
+                value={search['period']}
                 onChange={(event) => void navigate({ search: { ...search, period: event.target.value } })}
               >
                 <option value="month">Este mês</option>
@@ -250,7 +250,7 @@ function Financeiro() {
               Status da venda
               <select
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                value={search.status}
+                value={search['status']}
                 onChange={(event) => void navigate({ search: { ...search, status: event.target.value } })}
               >
                 <option value="all">Todos</option>
@@ -380,22 +380,22 @@ function Financeiro() {
                   </thead>
                   <tbody className="divide-y">
                     {salesInPeriod.slice(0, 25).map((sale) => {
-                      const lead = leadMap.get(textValue(sale.lead_id));
-                      const saleReceived = paymentBySale.get(textValue(sale.id)) ?? 0;
-                      const status = textValue(sale.status);
+                      const lead = leadMap.get(textValue(sale['lead_id']));
+                      const saleReceived = paymentBySale.get(textValue(sale['id'])) ?? 0;
+                      const status = textValue(sale['status']);
                       return (
-                        <tr key={textValue(sale.id)} className="transition-colors hover:bg-muted/20">
+                        <tr key={textValue(sale['id'])} className="transition-colors hover:bg-muted/20">
                           <td className="px-5 py-4">
-                            <div className="font-medium">{textValue(lead?.name) || 'Cliente não informado'}</div>
-                            <div className="text-xs text-muted-foreground">{textValue(lead?.company) || 'Sem empresa'}</div>
+                            <div className="font-medium">{textValue(lead?.['name']) || 'Cliente não informado'}</div>
+                            <div className="text-xs text-muted-foreground">{textValue(lead?.['company']) || 'Sem empresa'}</div>
                           </td>
                           <td className="px-5 py-4">
-                            <div>{textValue(sale.service) || '—'}</div>
-                            <div className="text-xs text-muted-foreground">{textValue(sale.seller_email) || 'Vendedor não informado'}</div>
+                            <div>{textValue(sale['service']) || '—'}</div>
+                            <div className="text-xs text-muted-foreground">{textValue(sale['seller_email']) || 'Vendedor não informado'}</div>
                           </td>
                           <td className="whitespace-nowrap px-5 py-4">
-                            <div className="font-medium">{formatCurrency(numberValue(sale.initial_value))}</div>
-                            <div className="text-xs text-muted-foreground">{formatDate(sale.closed_on)}</div>
+                            <div className="font-medium">{formatCurrency(numberValue(sale['initial_value']))}</div>
+                            <div className="text-xs text-muted-foreground">{formatDate(sale['closed_on'])}</div>
                           </td>
                           <td className="whitespace-nowrap px-5 py-4 font-medium">
                             {data.isAdmin ? formatCurrency(saleReceived) : 'Restrito'}
@@ -429,14 +429,14 @@ function Financeiro() {
               {!data.isAdmin && <p className="text-sm text-muted-foreground">Informação disponível somente para administradores.</p>}
               {data.isAdmin && !nextInstallments.length && <p className="text-sm text-muted-foreground">Nenhum vencimento pendente encontrado.</p>}
               {data.isAdmin && nextInstallments.map((installment) => (
-                <div key={textValue(installment.id)} className="rounded-lg border border-border/70 p-3">
+                <div key={textValue(installment['id'])} className="rounded-lg border border-border/70 p-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-medium">{formatCurrency(numberValue(installment.amount_due))}</p>
-                      <p className="text-xs text-muted-foreground">Vencimento: {formatDate(installment.due_date)}</p>
+                      <p className="text-sm font-medium">{formatCurrency(numberValue(installment['amount_due']))}</p>
+                      <p className="text-xs text-muted-foreground">Vencimento: {formatDate(installment['due_date'])}</p>
                     </div>
-                    <Badge variant={textValue(installment.due_date).slice(0, 10) < today ? 'destructive' : 'secondary'}>
-                      {textValue(installment.due_date).slice(0, 10) < today ? 'Vencida' : 'Pendente'}
+                    <Badge variant={textValue(installment['due_date']).slice(0, 10) < today ? 'destructive' : 'secondary'}>
+                      {textValue(installment['due_date']).slice(0, 10) < today ? 'Vencida' : 'Pendente'}
                     </Badge>
                   </div>
                 </div>

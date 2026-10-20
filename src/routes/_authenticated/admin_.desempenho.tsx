@@ -208,7 +208,7 @@ function PerformancePage() {
               ['month', 'Este mês'],
               ['custom', 'Período personalizado'],
             ].map(([key, label]) => (
-              <Button key={key} type="button" variant={period === key ? 'secondary' : 'outline'} onClick={() => setPeriod(key)}>
+              <Button key={key} type="button" variant={period === key ? 'secondary' : 'outline'} onClick={() => setPeriod(key as string)}>
                 {label}
               </Button>
             ))}
