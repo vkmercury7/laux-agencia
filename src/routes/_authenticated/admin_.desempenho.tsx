@@ -182,13 +182,13 @@ function PerformancePage() {
             <p className="text-sm text-muted-foreground">Use os filtros para atualizar os indicadores, a lista e o ranking.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            {[
+            {([
               ['today', 'Hoje'],
               ['yesterday', 'Ontem'],
               ['week', 'Últimos 7 dias'],
               ['month', 'Este mês'],
               ['custom', 'Período personalizado'],
-            ].map(([key, label]) => (
+            ] as const).map(([key, label]) => (
               <Button key={key} type="button" variant={period === key ? 'secondary' : 'outline'} onClick={() => setPeriod(key)}>
                 {label}
               </Button>
