@@ -56,6 +56,16 @@ function performanceRows(value: unknown): unknown {
   return (value as { rows?: unknown }).rows;
 }
 
+function performanceErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (message.includes('PERFORMANCE_FORBIDDEN')) return 'Esta seção é exclusiva para administradores.';
+  if (message.includes('PERFORMANCE_PERMISSION_CHECK_FAILED')) return 'Não foi possível verificar a permissão administrativa.';
+  if (message.includes('PERFORMANCE_QUERY_FAILED')) return 'Falha ao consultar funcionários ou indicadores no backend.';
+  if (message.includes('PERFORMANCE_BACKEND_UNAVAILABLE') || message.includes('Missing Supabase')) return 'O backend de desempenho está indisponível no momento.';
+  if (message.includes('Unauthorized')) return 'Sua sessão não está autorizada para consultar o desempenho.';
+  return 'Não foi possível carregar os dados de desempenho.';
+}
+
 function rowStatus(row: unknown): PresenceStatus {
   const value = optionalText(row, ['status', 'presenceStatus', 'presence_status', 'presence'])?.toLowerCase();
   if (value === 'online' || value === 'active' || value === 'ativo') return 'online';
@@ -97,7 +107,7 @@ function shiftDate(value: string, days: number) {
 function PerformancePage() {
   const fetchAccess = useServerFn(getMyAccess);
   const fetchPerf = useServerFn(getTeamPerformance);
-  const { data: access, isLoading: loadingAccess } = useQuery({
+  const { data: access, isLoading: loadingAccess, error: accessError } = useQuery({
     queryKey: ['access'],
     queryFn: () => fetchAccess(),
   });
@@ -172,6 +182,10 @@ function PerformancePage() {
     return <main className="admin-shell min-h-screen bg-background"><p className="admin-empty">Carregando...</p></main>;
   }
 
+  if (accessError) {
+    return <main className="admin-shell min-h-screen bg-background"><div className="admin-container"><AdminHeader title="Desempenho da Equipe" /><p className="admin-empty" role="alert">{performanceErrorMessage(accessError)}</p></div></main>;
+  }
+
   if (!access?.isAdmin) {
     return <main className="admin-shell min-h-screen bg-background"><div className="admin-container"><AdminHeader title="Acesso restrito" /><p className="admin-empty" role="alert">Esta seção é exclusiva para administradores.</p></div></main>;
   }
@@ -230,7 +244,7 @@ function PerformancePage() {
         </section>
 
         {isLoading && <p className="admin-empty">Carregando indicadores...</p>}
-        {error && <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">Não foi possível carregar o desempenho.</p>}
+        {error && <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{performanceErrorMessage(error)}</p>}
 
         {data && !isLoading && (
           <>
@@ -246,7 +260,8 @@ function PerformancePage() {
                 <div><h2 className="text-xl font-semibold text-foreground">Funcionários</h2><p className="text-sm text-muted-foreground">Cada colaborador retornado pela consulta atual permanece visível mesmo com indicadores zerados.</p></div>
                 <span className="text-sm text-muted-foreground">{rows.length} resultado(s)</span>
               </div>
-              {!rows.length && <p className="admin-empty rounded-xl border border-dashed border-border">Nenhum colaborador foi retornado pela fonte atual para este filtro.</p>}
+              {data.state === 'no_activity' && <p className="mb-4 rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">Nenhuma atividade foi registrada no período selecionado. Os funcionários autorizados continuam listados com indicadores zerados.</p>}
+              {!rows.length && <p className="admin-empty rounded-xl border border-dashed border-border">{allRows.length === 0 ? data.state === 'no_members' ? 'Nenhum funcionário interno autorizado foi encontrado.' : 'A consulta não retornou funcionários.' : 'Nenhum colaborador corresponde aos filtros selecionados.'}</p>}
               {rows.length > 0 && <div className="grid gap-4 lg:grid-cols-2">
                 {rows.map((row) => {
                   const currentStatus = rowStatus(row);
