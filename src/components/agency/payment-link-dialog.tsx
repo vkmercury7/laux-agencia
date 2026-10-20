@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { CalendarDays, CheckCircle2, CreditCard, Link2 } from 'lucide-react';
-import { AsaasBillingType, getAsaasIntegrationStatus } from '@/lib/asaas';
-import { SalesData } from '@/lib/sales-query';
+import { getAsaasIntegrationStatus } from '@/lib/asaas';
+import type { AsaasBillingType } from '@/lib/asaas';
+import type { SalesData } from '@/lib/sales-query';
 import { currency, parseMoney, todaySP } from '@/lib/sales';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -268,7 +269,14 @@ export function PaymentLinkDialog({ open, onOpenChange, data }: PaymentLinkDialo
             <div className='grid gap-4 sm:grid-cols-2'>
               <div className='space-y-2'>
                 <Label htmlFor='payment-method'>Método de pagamento</Label>
-                <Select value={form.method} onValueChange={(value: PaymentMethod) => update('method', value)}>
+                <Select
+                  value={form.method}
+                  onValueChange={(value) => {
+                    if (value === 'pix' || value === 'cartao' || value === 'boleto') {
+                      update('method', value);
+                    }
+                  }}
+                >
                   <SelectTrigger id='payment-method'>
                     <SelectValue />
                   </SelectTrigger>
