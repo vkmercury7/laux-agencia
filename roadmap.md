@@ -1,7 +1,7 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
 ## Restauração urgente da prévia
-- [ ] Corrigir os erros de sintaxe e TypeScript dos commits recentes, preservando funcionalidades.
-- [ ] Confirmar compilação automática, testes existentes e abertura da prévia; informar limites da sincronização GitHub.
+- [x] Corrigir sintaxe inválida e acessos por assinatura de índice na Central financeira, parâmetros do link ao dashboard e tipagem dos filtros de desempenho, preservando funcionalidades.
+- [x] Compilação e TypeScript automáticos: build OK; 26 testes passaram; desempenho e financeiro abrem autenticados, filtro Hoje funciona e retorno ao dashboard por teclado sem erros de execução. Commit local gerado pelo Lovable; envio remoto depende da sincronização Git, cujo status não é acessível pelo agente.
 ## Ligações e desempenho da equipe
 - [x] Registro de ligações nos detalhes do cliente (resultado, observação, próximo contato), salvo por usuário autenticado com histórico e atividade automática.
 - [x] Painel /admin/desempenho exclusivo para administradores, com indicadores, filtros e desempenho individual por cargo.
