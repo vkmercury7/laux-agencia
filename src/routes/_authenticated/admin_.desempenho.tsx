@@ -12,6 +12,7 @@ import { getTeamPerformance } from '@/lib/calls.functions';
 import { getMyAccess } from '@/lib/team.functions';
 import { currency, todaySP } from '@/lib/sales';
 import { ROLE_LABELS } from '@/lib/team-roles';
+import { normalizeTeamPerformanceRows } from '@/lib/team-performance';
 
 export const Route = createFileRoute('/_authenticated/admin_/desempenho')({
   head: () => ({
@@ -128,7 +129,7 @@ function PerformancePage() {
     enabled: Boolean(access?.isAdmin && validRange),
   });
 
-  const allRows = data?.rows ?? [];
+  const allRows = normalizeTeamPerformanceRows(data?.rows);
   const roles = [...new Set(allRows.map((row) => row.role).filter(Boolean))];
 
   const rows = useMemo(() => {
