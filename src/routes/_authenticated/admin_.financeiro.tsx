@@ -210,7 +210,7 @@ function Financeiro() {
 
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <Button asChild variant="outline">
-            <Link to="/admin/dashboard">
+            <Link to="/admin/dashboard" search={{ period: 'month', from: '', to: '', seller: '' }}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar ao dashboard
             </Link>
