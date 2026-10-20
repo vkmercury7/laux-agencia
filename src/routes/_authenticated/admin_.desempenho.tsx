@@ -182,7 +182,7 @@ function PerformancePage() {
             <p className="text-sm text-muted-foreground">Use os filtros para atualizar os indicadores, a lista e o ranking.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            {[
+            {([
               ['today', 'Hoje'],
               ['yesterday', 'Ontem'],
               ['week', 'Últimos 7 dias'],
