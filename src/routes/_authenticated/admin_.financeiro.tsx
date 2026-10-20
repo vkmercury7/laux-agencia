@@ -63,7 +63,7 @@ function statusLabel(status: string): string {
     ativo: 'Ativo',
     encerrado: 'Encerrado',
   };
-  return labels[status] ?? status || '—';
+  return labels[status] ?? (status || '—');
 }
 
 function statusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
