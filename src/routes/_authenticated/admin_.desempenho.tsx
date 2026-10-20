@@ -188,7 +188,7 @@ function PerformancePage() {
               ['week', 'Últimos 7 dias'],
               ['month', 'Este mês'],
               ['custom', 'Período personalizado'],
-            ].map(([key, label]) => (
+            ] as const).map(([key, label]) => (
               <Button key={key} type="button" variant={period === key ? 'secondary' : 'outline'} onClick={() => setPeriod(key)}>
                 {label}
               </Button>
