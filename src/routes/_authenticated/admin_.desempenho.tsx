@@ -51,6 +51,11 @@ function rowName(row: unknown) {
   return optionalText(row, ['fullName', 'full_name', 'name', 'displayName', 'display_name']) ?? 'Nome não informado';
 }
 
+function performanceRows(value: unknown): unknown {
+  if (!value || typeof value !== 'object' || !('rows' in value)) return [];
+  return (value as { rows?: unknown }).rows;
+}
+
 function rowStatus(row: unknown): PresenceStatus {
   const value = optionalText(row, ['status', 'presenceStatus', 'presence_status', 'presence'])?.toLowerCase();
   if (value === 'online' || value === 'active' || value === 'ativo') return 'online';
@@ -129,7 +134,7 @@ function PerformancePage() {
     enabled: Boolean(access?.isAdmin && validRange),
   });
 
-  const allRows = normalizeTeamPerformanceRows(data?.rows);
+  const allRows = normalizeTeamPerformanceRows(performanceRows(data));
   const roles = [...new Set(allRows.map((row) => row.role).filter(Boolean))];
 
   const rows = useMemo(() => {
@@ -273,7 +278,17 @@ function PerformancePage() {
               </section>
 
               <section className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
-                <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><h2 className="text-xl font-semibold text-foreground">Ranking da equipe</h2><p className="text-sm text-muted-foreground">Comparação apenas entre os registros do período selecionado.</p></div><Select value={rankingMetric} onValueChange={(value: RankingMetric) => setRankingMetric(value)}><SelectTrigger className="w-full sm:w-52" aria-label="Métrica do ranking"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="sales">Vendas fechadas</SelectItem><SelectItem value="meetings">Reuniões agendadas</SelectItem><SelectItem value="sold">Valor vendido</SelectItem></SelectContent></Select></div>
+                <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><h2 className="text-xl font-semibold text-foreground">Ranking da equipe</h2><p className="text-sm text-muted-foreground">Comparação apenas entre os registros do período selecionado.</p></div><Select
+                  value={rankingMetric}
+                  onValueChange={(value) => {
+                    if (value === 'sales' || value === 'meetings' || value === 'sold') {
+                      setRankingMetric(value);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="w-full sm:w-52" aria-label="Métrica do ranking"><SelectValue /></SelectTrigger>
+                  <SelectContent><SelectItem value="sales">Vendas fechadas</SelectItem><SelectItem value="meetings">Reuniões agendadas</SelectItem><SelectItem value="sold">Valor vendido</SelectItem></SelectContent>
+                </Select></div>
                 <div className="space-y-3">{rankingRows.map((row, index) => { const value = Number(row[rankingMetric] || 0); return <div key={row.userId} className="flex items-center gap-3 rounded-lg border border-border p-3"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-foreground">{index + 1}</span><div className="min-w-0 flex-1"><p className="truncate font-medium text-foreground">{rowName(row)}</p><p className="truncate text-xs text-muted-foreground">{ROLE_LABELS[row.role] ?? row.role}</p></div><strong className="text-sm text-foreground">{rankingMetric === 'sold' ? currency(value) : value}</strong></div>; })}</div>
                 {!rankingRows.length && <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">Ainda não há registros para montar o ranking.</p>}
               </section>
