@@ -132,6 +132,18 @@ export const getTeamPerformance = createServerFn({ method: "POST" })
         });
       }
 
+      // Administrators with a real role but no team_members row (e.g. principal admin).
+      for (const role of roles) {
+        if (memberByUser.has(role.user_id) || (role.role !== "admin" && role.role !== "super_admin")) continue;
+        const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(role.user_id);
+        const email = authUser?.user?.email;
+        if (!email) continue;
+        memberByUser.set(role.user_id, { email, user_id: role.user_id, role: role.role, status: "active", full_name: null } as (typeof activeMembers)[number]);
+        byUser.set(role.user_id, { email, fullName: null, role: roleByUser.get(role.user_id) ?? role.role, calls: 0, pending: 0, meetings: 0, sales: 0, sold: 0, trafficClients: 0 });
+      }
+
+
+
       const ensure = (uid: string) => {
         if (!memberByUser.has(uid)) return undefined;
         return byUser.get(uid);
