@@ -138,8 +138,8 @@ export const getTeamPerformance = createServerFn({ method: "POST" })
         const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(role.user_id);
         const email = authUser?.user?.email;
         if (!email) continue;
-        memberByUser.set(role.user_id, { email, user_id: role.user_id, role: role.role, status: "active", full_name: null } as (typeof activeMembers)[number]);
-        byUser.set(role.user_id, { email, fullName: null, role: roleByUser.get(role.user_id) ?? role.role, calls: 0, pending: 0, meetings: 0, sales: 0, sold: 0, trafficClients: 0 });
+        memberByUser.set(role.user_id, { email, user_id: role.user_id, role: role.role, status: "active", full_name: (authUser?.user?.user_metadata?.["full_name"] as string | undefined) ?? null } as (typeof activeMembers)[number]);
+        byUser.set(role.user_id, { email, fullName: (authUser?.user?.user_metadata?.["full_name"] as string | undefined) ?? null, role: roleByUser.get(role.user_id) ?? role.role, calls: 0, pending: 0, meetings: 0, sales: 0, sold: 0, trafficClients: 0 });
       }
 
 

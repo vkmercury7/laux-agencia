@@ -48,20 +48,42 @@ export const listTeam = createServerFn({ method: "POST" })
         }
       }
     }
-    return (data ?? []).map((m: any) => ({
+    const rows = (data ?? []).map((m: any) => ({
       id: m.id as string, email: m.email as string, role: m.role as string,
       status: m.status as string, invited_at: m.invited_at as string, full_name: m.full_name as string | null,
     }));
+    // Administrators with a real role but no team_members row (principal admin), shown read-only.
+    const known = new Set((data ?? []).map((m: any) => m.user_id).filter(Boolean));
+    const { data: adminRoles } = await admin.from("user_roles").select("user_id, role").in("role", ["admin", "super_admin"]);
+    for (const r of adminRoles ?? []) {
+      if (known.has(r.user_id)) continue;
+      known.add(r.user_id);
+      const { data: u } = await admin.auth.admin.getUserById(r.user_id);
+      if (!u?.user?.email) continue;
+      rows.unshift({ id: `auth:${r.user_id}`, email: u.user.email, role: "super_admin", status: "active",
+        invited_at: u.user.created_at, full_name: (u.user.user_metadata?.["full_name"] as string | undefined) ?? null });
+    }
+    return rows;
   });
 
 const roleSchema = assignableRoleSchema;
 
 export const updateMemberName = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: unknown) => z.object({ id: z.string().uuid(), fullName: z.string().trim().min(1, 'Informe o nome completo.').max(200) }).parse(i))
+  .inputValidator((i: unknown) => z.object({ id: z.string().regex(/^(auth:)?[0-9a-f-]{36}$/i), fullName: z.string().trim().min(1, 'Informe o nome completo.').max(200) }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: isAdmin, error: permissionError } = await context.supabase.rpc('crm_is_admin');
     if (permissionError || !isAdmin) throw new Error('Acesso restrito aos administradores.');
+    if (data.id.startsWith('auth:')) {
+      const uid = data.id.slice(5);
+      const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+      const { data: r } = await supabaseAdmin.from('user_roles').select('role').eq('user_id', uid).in('role', ['admin', 'super_admin']).limit(1);
+      if (!r?.length) throw new Error('Não foi possível salvar o nome.');
+      const { data: u } = await supabaseAdmin.auth.admin.getUserById(uid);
+      const { error: e } = await supabaseAdmin.auth.admin.updateUserById(uid, { user_metadata: { ...(u?.user?.user_metadata ?? {}), full_name: data.fullName } });
+      if (e) throw new Error('Não foi possível salvar o nome.');
+      return { ok: true };
+    }
     const { error } = await context.supabase.rpc('crm_update_team_member_name', { member_id: data.id, new_name: data.fullName });
     if (error) throw new Error('Não foi possível salvar o nome.');
     return { ok: true };
