@@ -1,4 +1,6 @@
 # LAUX AGÊNCIA — Atualização Premium 2.0
+## Nomes da equipe
+- [ ] Adicionar nome opcional, edição administrativa protegida e exibição no desempenho; verificar salvamento e permissões.
 ## Ligações e desempenho da equipe
 - [x] Registro de ligações nos detalhes do cliente (resultado, observação, próximo contato), salvo por usuário autenticado com histórico e atividade automática.
 - [x] Painel /admin/desempenho exclusivo para administradores, com indicadores, filtros e desempenho individual por cargo.
