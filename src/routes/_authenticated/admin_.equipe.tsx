@@ -2,11 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Send, UserPlus } from "lucide-react";
+import { ArrowLeft, Pencil, Send, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { AdminHeader } from "@/components/agency/admin-nav";
-import { changeRole, getMyAccess, inviteMember, listTeam, resendInvite, revokeMember } from "@/lib/team.functions";
+import { changeRole, getMyAccess, inviteMember, listTeam, resendInvite, revokeMember, updateMemberName } from "@/lib/team.functions";
 import { ROLE_LABELS, assignableRoleSchema, type TeamRole } from '@/lib/team-roles';
 
 export const Route = createFileRoute("/_authenticated/admin_/equipe")({
@@ -37,6 +37,20 @@ function TeamPage() {
   const revoke = useServerFn(revokeMember);
   const setRole = useServerFn(changeRole);
   const resend = useServerFn(resendInvite);
+  const saveName = useServerFn(updateMemberName);
+  const [editing, setEditing] = useState<{ id: string; email: string } | null>(null);
+  const [fullName, setFullName] = useState('');
+  const nameMutation = useMutation({
+    mutationFn: saveName,
+    onSuccess: async () => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ['team'] }),
+        qc.invalidateQueries({ queryKey: ['team-performance'] }),
+      ]);
+      setEditing(null);
+      setMsg({ ok: true, text: 'Nome salvo.' });
+    },
+  });
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRoleSel] = useState<TeamRole>('seller');
@@ -90,7 +104,7 @@ function TeamPage() {
                 <tbody>
                   {team.data.map((m) => (
                     <tr key={m.id}>
-                      <td>{m.email}</td>
+                      <td>{m.full_name && <div>{m.full_name}</div>}{m.email}</td>
                       <td>
                         {m.status === "revoked" || m.role === 'super_admin' ? roleLabel[m.role] : (
                           <select aria-label={`Função de ${m.email}`} value={m.role} disabled={run.isPending}
@@ -103,6 +117,10 @@ function TeamPage() {
                       <td>{statusLabel[m.status]}</td>
                       <td>{date.format(new Date(m.invited_at))}</td>
                       <td style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                        <Button variant="ghost" size="sm" title="Editar nome" aria-label={`Editar nome de ${m.email}`}
+                          onClick={() => { nameMutation.reset(); setFullName(m.full_name ?? ''); setEditing({ id: m.id, email: m.email }); }}>
+                          <Pencil size={14} /> Editar nome
+                        </Button>
                         {m.status === "pending" && (
                           <Button variant="ghost" size="sm" disabled={run.isPending}
                             onClick={() => run.mutate(() => resend({ data: { id: m.id } }).then(() => setMsg({ ok: true, text: `Convite reenviado para ${m.email}.` })))}>
@@ -124,6 +142,23 @@ function TeamPage() {
           )}
         </div>
       </div>
+
+      <Dialog open={Boolean(editing)} onOpenChange={(value) => { if (!value && !nameMutation.isPending) setEditing(null); }}>
+        <DialogContent className="admin-dialog">
+          <DialogTitle>Editar nome</DialogTitle>
+          <DialogDescription>{editing?.email}</DialogDescription>
+          <form className="grid gap-3" onSubmit={(e) => { e.preventDefault(); if (editing) nameMutation.mutate({ data: { id: editing.id, fullName } }); }}>
+            <label className="grid gap-1">E-mail
+              <input className="admin-search" type="email" readOnly value={editing?.email ?? ''} />
+            </label>
+            <label className="grid gap-1">Nome completo
+              <input className="admin-search" required maxLength={200} value={fullName} onChange={(e) => setFullName(e.target.value)} />
+            </label>
+            {nameMutation.error && <p role="alert" className="text-destructive">{nameMutation.error.message}</p>}
+            <Button variant="premium" type="submit" disabled={nameMutation.isPending || !fullName.trim()}>{nameMutation.isPending ? 'Salvando...' : 'Salvar'}</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="admin-dialog">

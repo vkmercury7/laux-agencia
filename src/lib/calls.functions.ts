@@ -68,7 +68,7 @@ export const getTeamPerformance = createServerFn({ method: "POST" })
       const to = `${data.to}T23:59:59.999-03:00`;
 
       const [membersResult, rolesResult, callsResult, meetingsResult, salesResult, trafficResult] = await Promise.all([
-        supabaseAdmin.from("team_members").select("email, user_id, role, status").neq("status", "revoked"),
+        supabaseAdmin.from("team_members").select("email, user_id, role, status, full_name").neq("status", "revoked"),
         supabaseAdmin.from("user_roles").select("user_id, role"),
         supabaseAdmin.from("lead_calls").select("user_id, user_email, proximo_contato").gte("created_at", from).lte("created_at", to),
         supabaseAdmin.from("agendamentos").select("responsavel_id").gte("data_hora_inicio", from).lte("data_hora_inicio", to).neq("status", "cancelada"),
@@ -103,6 +103,7 @@ export const getTeamPerformance = createServerFn({ method: "POST" })
 
       type PerformanceAccumulator = {
         email: string;
+        fullName: string | null;
         role: string;
         calls: number;
         pending: number;
@@ -120,6 +121,7 @@ export const getTeamPerformance = createServerFn({ method: "POST" })
         if (!member.user_id) continue;
         byUser.set(member.user_id, {
           email: member.email ?? "",
+          fullName: member.full_name,
           role: roleByUser.get(member.user_id) ?? member.role ?? "",
           calls: 0,
           pending: 0,

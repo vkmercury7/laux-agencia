@@ -50,11 +50,22 @@ export const listTeam = createServerFn({ method: "POST" })
     }
     return (data ?? []).map((m: any) => ({
       id: m.id as string, email: m.email as string, role: m.role as string,
-      status: m.status as string, invited_at: m.invited_at as string,
+      status: m.status as string, invited_at: m.invited_at as string, full_name: m.full_name as string | null,
     }));
   });
 
 const roleSchema = assignableRoleSchema;
+
+export const updateMemberName = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ id: z.string().uuid(), fullName: z.string().trim().min(1, 'Informe o nome completo.').max(200) }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin, error: permissionError } = await context.supabase.rpc('crm_is_admin');
+    if (permissionError || !isAdmin) throw new Error('Acesso restrito aos administradores.');
+    const { error } = await context.supabase.rpc('crm_update_team_member_name', { member_id: data.id, new_name: data.fullName });
+    if (error) throw new Error('Não foi possível salvar o nome.');
+    return { ok: true };
+  });
 
 export const inviteMember = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

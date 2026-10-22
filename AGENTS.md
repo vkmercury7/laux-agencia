@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Application architecture
+- Employee names live on existing team_members; a checked name-only RPC preserves locked table RLS and staff roles/status, while existing team/performance queries share the saved name.
 - Traffic management links existing lead IDs through assignments, campaigns and non-overlapping campaign periods; reuse CRM activities with authenticated authors to avoid a parallel logging system.
 - Staff roles remain in user_roles, with legacy collaborator treated as seller; separate shared staff consultation from scoped writes and administrator-only payments in database policies, and atomic role changes through a checked RPC.
 - Diagnosis submissions are stored by the public server function in `src/lib/leads.functions.ts` (validated, deduplicated, service-role insert) and read through an authenticated staff-consultation server function; the browser never queries leads directly, so credentials and lead data stay server-side.
