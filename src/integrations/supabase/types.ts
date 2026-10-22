@@ -492,6 +492,7 @@ export type Database = {
       team_members: {
         Row: {
           email: string
+          full_name: string | null
           id: string
           invited_at: string
           invited_by: string | null
@@ -502,6 +503,7 @@ export type Database = {
         }
         Insert: {
           email: string
+          full_name?: string | null
           id?: string
           invited_at?: string
           invited_by?: string | null
@@ -512,6 +514,7 @@ export type Database = {
         }
         Update: {
           email?: string
+          full_name?: string | null
           id?: string
           invited_at?: string
           invited_by?: string | null
@@ -690,6 +693,10 @@ export type Database = {
         Returns: undefined
       }
       crm_register_sale: { Args: { payload: Json }; Returns: string }
+      crm_update_team_member_name: {
+        Args: { member_id: string; new_name: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
